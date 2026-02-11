@@ -11,11 +11,12 @@ namespace WebApplication2.Pages.Account
         public Credential Credential { get; set; }
         public void OnGet()
         {
+            this.Credential = new Credential { UserName = "admin" };
         }
 
         public void OnPost()
         {
-
+            this.Credential = new Credential { UserName = "admin" };
         }
         //public IActionResult OnPost()
         //{
