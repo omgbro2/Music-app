@@ -12,13 +12,33 @@ namespace WebApplication2.Pages.Account
         public void OnGet()
         {
         }
+
+        public void OnPost()
+        {
+
+        }
+        //public IActionResult OnPost()
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return Page();   
+        //    }
+
+        //    if (Credential.UserName == "admin" && Credential.Password == "123")
+        //    {
+        //        return RedirectToPage("/Index");
+        //    }
+
+        //    ModelState.AddModelError(string.Empty, "Invalid login attempt");
+        //    return Page();
+        //}
     }
     public class Credential
     {
-        [Required]
+        [Required(ErrorMessage = "Username is required")]
         public string UserName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Password is required")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }
