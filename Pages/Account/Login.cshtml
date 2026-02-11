@@ -1,0 +1,21 @@
+﻿@page
+@model WebApplication2.Pages.Account.LoginModel
+@{
+}
+
+<div class="container border" style="padding:20px">
+    <form method="post">
+        <div class="form-group row">
+            <label asp-for="Credential.UserName"></label>
+        </div>
+        <div class="col-5">
+            <input type="text" asp-for="Credential.UserName" />
+        </div>
+        <div class="form-group row">
+            <label asp-for="Credential.Password"></label>
+        </div>
+        <div class="col-5">
+            <input type="text" asp-for="Credential.Password" />
+        </div>
+    </form>
+</div>
