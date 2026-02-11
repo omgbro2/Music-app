@@ -1,0 +1,24 @@
+﻿@page "{id:int}"
+@model WebApplication2.Pages.Playlists.DetailsModel
+
+<h2>@Model.PlaylistName</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Date Added</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var song in Model.Songs)
+        {
+            <tr>
+                <td>@song.Title</td>
+                <td>@song.Artist</td>
+                <td>@song.DateAdded.ToShortDateString()</td>
+            </tr>
+        }
+    </tbody>
+</table>
