@@ -1,39 +1,30 @@
 ﻿@page
 @model WebApplication2.Pages.Account.LoginModel
+
 @{
+    Layout = null;   // noņem navbar
 }
 
-<div class="container border" style="padding:20px">
-    <form method="post">
-        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
-        <div class="form-group row">
-            <div class="col-2">
-                <label asp-for="Credential.UserName"></label>
-            </div>
-            <div class="col-5">
-                <input type="text" asp-for="Credential.UserName" class="form-control" />
-            </div>
-            <span class="text-danger" asp-validation-for="Credential.UserName"></span>
-        </div>
+<div class="login-wrapper">
+    <div class="login-box">
 
-        <div class="form-group row">
-            <div class="col-2">
-                <label asp-for="Credential.Password"></label>
-            </div>
-            <div class="col-5">
-                <input type="password" asp-for="Credential.Password" class="form-control" />
-            </div>
-            <span class="text-danger" asp-validation-for="Credential.Password"></span>
-        </div>
+        <h2>Login</h2>
 
-        <div class="form-group row">
-            <div class="col-2">
-                <input type="submit" class="btn btn-primary" value="login" />
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <input asp-for="Credential.UserName" class="form-control" placeholder="Username" />
+                <span asp-validation-for="Credential.UserName" class="text-danger"></span>
             </div>
-        </div>
-        <div class="col-5">
 
-        </div>
-    </form>
+            <div class="form-group">
+                <input asp-for="Credential.Password" type="password" class="form-control" placeholder="Password" />
+                <span asp-validation-for="Credential.Password" class="text-danger"></span>
+            </div>
 
+            <button type="submit" class="btn-login">Login</button>
+        </form>
+
+    </div>
 </div>

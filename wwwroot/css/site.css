@@ -18,5 +18,29 @@ html {
 }
 
 body {
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #121212;
+}
+
+.login-box {
+    background: #181818;
+    padding: 40px;
+    border-radius: 10px;
+    width: 400px;
+    color: white;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+}
+
+
+body {
   margin-bottom: 60px;
+}
+
+body {
+    background: linear-gradient(to right, #1e3c72, #5e275b);
+    color: white;
 }

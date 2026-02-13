@@ -6,4 +6,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Pages\Account\Login - Copy.cshtml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Pages\Account\Component.razor" />
+    <Content Remove="Pages\Account\Login - Copy.cshtml" />
+  </ItemGroup>
+
 </Project>
