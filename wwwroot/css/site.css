@@ -1,46 +1,141 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-    height: 100vh;
+/* Reset */
+html, body {
     margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+    /* GLOBAL APP BACKGROUND (used after login) */
+    body.app-bg {
+        background: linear-gradient(135deg, #1e1e2f, #3a1c71);
+        color: white;
+    }
+
+/* ================= LOGIN PAGE ================= */
+
+.login-wrapper {
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #121212;
+    background: linear-gradient(135deg, #1e1e2f, #3a1c71);
 }
 
-.login-box {
-    background: #181818;
+.login-card {
+    background: #1f1f3a;
     padding: 40px;
-    border-radius: 10px;
-    width: 400px;
+    border-radius: 12px;
+    width: 320px;
+    text-align: center;
     color: white;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
 }
 
+    .login-card h2 {
+        margin-bottom: 20px;
+    }
 
-body {
-  margin-bottom: 60px;
+    .login-card input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 6px;
+        border: none;
+        outline: none;
+    }
+
+    .login-card button {
+        width: 100%;
+        padding: 10px;
+        border-radius: 6px;
+        border: none;
+        background: #7b2ff7;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .login-card button:hover {
+            background: #6922d1;
+        }
+
+/* ================= MAIN APP ================= */
+
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1e1e2f, #3a1c71);
+    color: white;
 }
 
-body {
-    background: linear-gradient(to right, #1e3c72, #5e275b);
+.sidebar {
+    width: 260px;
+    background: #141428;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.btn-create {
+    background: #7b2ff7;
+    padding: 8px;
+    border-radius: 6px;
+    text-align: center;
     color: white;
+    text-decoration: none;
+    margin-bottom: 15px;
+}
+
+.playlist-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1f1f3a;
+    padding: 8px 10px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.playlist-name {
+    color: white;
+    text-decoration: none;
+}
+
+.playlist-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-small {
+    font-size: 14px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.edit {
+    background: #3498db;
+    color: white;
+}
+
+.delete {
+    background: #e74c3c;
+    color: white;
+}
+
+.btn-logout {
+    margin-top: auto;
+    background: #e74c3c;
+    padding: 8px;
+    border-radius: 6px;
+    text-align: center;
+    color: white;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.main-content {
+    flex: 1;
+    padding: 40px;
 }

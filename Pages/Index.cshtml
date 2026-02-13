@@ -1,34 +1,48 @@
 ﻿@page
 @model WebApplication2.Pages.IndexModel
 
-<div class="d-flex">
+<div class="app-layout">
 
     <!-- Sidebar -->
-    <div style="width:250px; background:#1e1e2f; color:white; padding:20px;">
+    <div class="sidebar">
+
         <h4>MY PLAYLISTS</h4>
 
-        <a class="btn btn-sm btn-primary mb-2" asp-page="/Playlists/Create">+ Create</a>
+        <a class="btn-create" asp-page="/Playlists/Create">+ Create</a>
 
-        <ul class="list-group">
-            @foreach (var playlist in Model.Playlists)
-            {
-                <li class="list-group-item">
-                    <a asp-page="/Playlists/Details" asp-route-id="@playlist.Id">
-                        @playlist.Name
-                        
+        @foreach (var playlist in Model.Playlists)
+        {
+            <div class="playlist-item">
 
-                    </a>
+                <a class="playlist-name"
+                   asp-page="/Playlists/Details"
+                   asp-route-id="@playlist.Id">
+                    🎵 @playlist.Name
+                </a>
 
-                    
-                </li>
-            }
-        </ul>
-        <a asp-page="/Account/Logout" class="btn btn-danger btn-sm">Logout</a>
-        </a.
+                <div class="playlist-actions">
+                    <a class="btn-small edit"
+                       asp-page="/Playlists/Edit"
+                       asp-route-id="@playlist.Id">✏</a>
+
+                    <a class="btn-small delete"
+                       asp-page="/Playlists/Delete"
+                       asp-route-id="@playlist.Id">🗑</a>
+                </div>
+
+            </div>
+        }
+
+        <form method="post" asp-page="/Account/Logout">
+            <button type="submit" class="btn-logout">Logout</button>
+        </form>
+
+
+
     </div>
 
-    <!-- Main Content -->
-    <div class="flex-fill p-4">
+    <!-- Main -->
+    <div class="main-content">
         <h3>Hello, @Model.Username 👋</h3>
         <p>Select a playlist to view songs.</p>
     </div>
