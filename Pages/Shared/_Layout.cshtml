@@ -8,23 +8,24 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebApplication2.styles.css" asp-append-version="true" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-dark bg-transparent">
-        </nav>
-    </header>
+<body class="app-bg">
 
-    <div class="container-fluid p-0">
-        <main role="main">
+    <div class="app-layout">
+
+        <div class="sidebar">
+            <a asp-page="/Playlists" class="btn-create">🏠 Home</a>
+
+            <a asp-page="/Account/Profile" class="btn-create">👤 My Account</a>
+
+            <a asp-page="/Account/Login" class="btn-logout">Logout</a>
+        </div>
+
+        <div class="main-content">
             @RenderBody()
-        </main>
+        </div>
+
     </div>
 
-    <footer class="footer text-muted">
-        <div class="container">
-            &copy; 2026 - WebApplication2 -
-            <a asp-page="/Privacy">Privacy</a>
-        </div>
-    </footer>
 </body>
+
 </html>

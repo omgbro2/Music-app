@@ -1,12 +1,12 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿
 
-// Add services to the container.
+var builder = WebApplication.CreateBuilder(args);
+
+// Services
 builder.Services.AddRazorPages();
 
-// ✅ Add distributed memory cache (required for Session)
 builder.Services.AddDistributedMemoryCache();
 
-// ✅ Add session service
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -14,9 +14,13 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//    options.UseSqlite("Data Source=app.db"));
+
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Middleware
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
@@ -25,12 +29,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
-// ✅ Session must be BEFORE MapRazorPages
 app.UseSession();
-
 app.UseAuthorization();
 
 app.MapRazorPages();

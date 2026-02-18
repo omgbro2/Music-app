@@ -26,8 +26,16 @@ a {
 .border-top {
   border-top: 1px solid #e5e5e5;
 }
+
+<div style="text-align:right; padding:10px;" >
+<a asp-page="/Account/Profile" style="color:white;" >
+Hello, @User.Identity.Name 👤
+</a >
+</div >
+
+
 .border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .box-shadow {

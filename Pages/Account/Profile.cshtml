@@ -1,0 +1,19 @@
+﻿@page
+@model ProfileModel
+@{
+    Layout = "_Layout";
+}
+
+<div class="main-content">
+    <h2>My Profile</h2>
+
+    <div class="profile-card">
+        <p><strong>Username:</strong> @Model.Username</p>
+        <p><strong>Bio:</strong> @Model.Bio</p>
+
+        <form method="post">
+            <textarea asp-for="Bio" placeholder="Update your bio"></textarea>
+            <button type="submit">Save</button>
+        </form>
+    </div>
+</div>

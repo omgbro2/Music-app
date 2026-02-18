@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Http;
 
 namespace WebApplication2.Pages.Account
 {
@@ -14,14 +13,10 @@ namespace WebApplication2.Pages.Account
 
         public IActionResult OnPost()
         {
-            if (Username == "admin" && Password == "123")
-            {
-                HttpContext.Session.SetString("Username", Username);
-                return RedirectToPage("/Index");
-            }
+            // TODO: validate user from database
 
-            return Page();
-
+            // After successful login redirect to Playlists
+            return RedirectToPage("/Playlists");
         }
     }
 }

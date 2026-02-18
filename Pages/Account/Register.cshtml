@@ -1,23 +1,25 @@
 ﻿@page
-@model LoginModel
+@model RegisterModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
-    Layout = null;  // ja nav shared layout
+    Layout = null;
 }
+
 <link rel="stylesheet" href="~/css/site.css" />
+
 
 <div class="login-wrapper">
     <div class="login-card">
-        <h2>Login</h2>
+        <h2>Create Account</h2>
 
         <form method="post">
             <input asp-for="Username" placeholder="Username" />
             <input asp-for="Password" type="password" placeholder="Password" />
-            <button type="submit">Login</button>
+            <button type="submit">Register</button>
         </form>
 
-        <p>Don't have an account?</p>
-        <a class="btn-create" asp-page="/Account/Register">Create New Account</a>
+        <p>Already have an account?</p>
+        <a class="btn-create" asp-page="/Account/Login">Back to Login</a>
     </div>
 </div>

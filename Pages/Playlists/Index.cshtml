@@ -1,0 +1,14 @@
+﻿@page
+@model WebApplication2.Pages.Playlists.IndexModel
+
+<h2>Hello, @Model.Username</h2>
+
+<h3>My Playlists</h3>
+
+<ul>
+    @foreach (var playlist in Model.Playlists)
+    {
+        <li>@playlist</li>
+    }
+</ul>
+
