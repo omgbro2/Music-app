@@ -1,24 +1,47 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using WebApplication2.Models;
+using WebApplication2.DbItems;
+using System.ComponentModel.DataAnnotations;
 
-public class ProfileModel : PageModel
+namespace SampleApp.Pages.User
 {
-    [BindProperty]
-    public string Bio { get; set; }
-
-    public string Username { get; set; }
-
-    public void OnGet()
+    public class ProfileModel : PageModel
     {
-        Username = User.Identity.Name;
 
-        // Load bio from database here
-    }
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-    public IActionResult OnPost()
-    {
-        // Save bio to database here
-        return RedirectToPage();
+
+        [BindProperty]
+        public UserInput UsernameData { get; set; } = new();
+
+        public class UserInput
+        {
+            [Required]
+            public string DisplayName { get; set; } = string.Empty;
+        }
+
+        public ProfileModel(UserManager<User> userManager, SignInManager<User> signInManager)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+        }
+
+        public void OnGet()
+        {
+        }
+
+        public async Task OnPostAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            user.DisplayName = UsernameData.DisplayName;
+            await _userManager.UpdateAsync(user);
+
+            await _signInManager.RefreshSignInAsync(user);
+
+            RedirectToPage();
+        }
+
     }
 }

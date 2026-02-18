@@ -1,48 +1,71 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using WebApplication2.Models;
+using WebApplication2.DbItems;
+using System.ComponentModel.DataAnnotations;
 
-namespace WebApplication2.Pages.Account
+namespace SampleApp.Pages
 {
     public class RegisterModel : PageModel
     {
-        //private readonly AppDbContext _context;
 
-        //public RegisterModel(AppDbContext context)
-        //{
-        //    _context = context;
-        //}
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
         [BindProperty]
-        public string Username { get; set; }
+        public RegisterInput Register { get; set; } = new();
 
-        [BindProperty]
-        public string Password { get; set; }
 
-        public IActionResult OnPost()
+        public string? ErrorMessage { get; set; }
+
+        public RegisterModel(UserManager<User> userManager, SignInManager<User> signInManager)
         {
-            //if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(Password))
-            //{
-            //    return Page();
-            //}
+            _userManager = userManager;
+            _signInManager = signInManager;
+        }
 
-            //// Pârbauda, vai jau eksistç
-            //if (_context.Users.Any(u => u.Username == Username))
-            //{
-            //    ModelState.AddModelError(string.Empty, "Username already exists!");
-            //    return Page();
-            //}
 
-            //var user = new User
-            //{
-            //    Username = Username,
-            //    Password = Password // vçlâk var hash
-            //};
+        public class RegisterInput
+        {
+            [Required]
+            public string UserName { get; set; } = string.Empty;
 
-            //_context.Users.Add(user);
-            //_context.SaveChanges();
 
-            return RedirectToPage("/Account/Login");
+            [Required]
+            [DataType(DataType.Password)]
+            public string Password { get; set; } = string.Empty;
+
+            [DataType(DataType.Password)]
+            [Compare(nameof(Password))]
+            public string ConfirmPassword { get; set; } = string.Empty;
+        }
+
+        public void OnGet()
+        {
+        }
+
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+
+
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                UserName = Register.UserName,
+                DisplayName = Register.UserName
+            };
+
+            var result = await _userManager.CreateAsync(user, Register.Password);
+
+            if (result.Succeeded)
+            {
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return Redirect("/");
+            }
+
+            ErrorMessage = string.Join(", ", result.Errors.Select(e => e.Description));
+            return Page();
         }
     }
 }

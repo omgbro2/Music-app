@@ -1,9 +1,8 @@
-﻿namespace WebApplication2.Models
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace WebApplication2.Models
 {
-    public class User
+    public class User : IdentityUser<Guid>
     {
-        public int Id { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; } // vienkāršs piemērs, vēlāk var hash
     }
 }
