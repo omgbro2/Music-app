@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using WebApplication2.DbItems;
+using WebApplication2.Models;
 
-namespace ChessOnline.Pages
+namespace WebApplication2.Pages.Account
 {
     public class LogoutModel : PageModel
     {

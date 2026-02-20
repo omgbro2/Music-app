@@ -1,7 +1,7 @@
 ﻿@page
-@model SampleApp.Pages.User.ProfileModel
+@model ProfileModel
 @using Microsoft.AspNetCore.Identity
-@inject UserManager<SampleApp.DbItems.SampleUser> UserManager
+@inject UserManager<WebApplication2.Models.User> UserManager
 
 @{
     var user = await UserManager.GetUserAsync(User);
@@ -19,7 +19,7 @@
         <div><strong>Username:</strong> @user?.UserName</div>
         <div>
             <label asp-for="UsernameData.DisplayName"></label>
-            <input asp-for="UsernameData.DisplayName" value="@user?.DisplayName" />
+            <input asp-for="UsernameData.DisplayName" value="@user?.UserName" />
             <span asp-validation-for="UsernameData.DisplayName"></span>
         </div>
         <button type="submit">Update Profile</button>

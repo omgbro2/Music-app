@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using WebApplication2.DbItems;
+using WebApplication2.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace SampleApp.Pages
+namespace WebApplication2.Pages.Account
+
 {
     public class RegisterModel : PageModel
     {
@@ -53,7 +54,6 @@ namespace SampleApp.Pages
             {
                 Id = Guid.NewGuid(),
                 UserName = Register.UserName,
-                DisplayName = Register.UserName
             };
 
             var result = await _userManager.CreateAsync(user, Register.Password);
