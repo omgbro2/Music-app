@@ -32,14 +32,19 @@ namespace WebApplication2.Pages.Account
         {
         }
 
-        public async Task OnPostAsync()
+        public async Task<IActionResult> OnPostAsync()
         {
             var user = await _userManager.GetUserAsync(User);
-            await _userManager.UpdateAsync(user);
 
+            if (user == null)
+                return RedirectToPage("/Account/Login");
+
+            user.UserName = UsernameData.DisplayName;
+
+            await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);
 
-            RedirectToPage();
+            return RedirectToPage("/Index"); // go to homepage
         }
 
     }
