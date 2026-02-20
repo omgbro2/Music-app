@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-
-namespace WebApplication2.Models
+﻿namespace WebApplication2.Models
 {
     public class Playlist
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-
-        public List<Song> Songs { get; set; }
+        public Guid UserId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public DateTime DateCreated { get; set; }
     }
 }

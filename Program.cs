@@ -1,6 +1,7 @@
 ﻿
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using WebApplication2;
 using WebApplication2.Models;
 
@@ -20,11 +21,12 @@ builder.Services.AddAuthentication("Identity.Application")
 
 builder.Services.AddAuthorization();
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+builder.Services.AddSingleton<PlaylistRepository>(new PlaylistRepository(connectionString));
 builder.Services.AddScoped<IUserStore<User>, MyUserStore>(serviceProvider =>
 {
-    var connectionString = serviceProvider.GetRequiredService<IConfiguration>()
-        .GetConnectionString("DefaultConnection") ?? "Data Source=sampleapp.db";
+    
     return new MyUserStore(connectionString);
 });
 builder.Services.AddIdentityCore<User>(options =>
