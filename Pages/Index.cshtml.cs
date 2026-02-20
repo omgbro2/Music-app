@@ -1,25 +1,36 @@
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using WebApplication2.Models;
 
 
 namespace WebApplication2.Pages
 {
     public class IndexModel : PageModel
     {
+        private readonly UserManager<User> _userManager;
         public string Username { get; set; }
 
         public List<Playlist> Playlists { get; set; }
 
+        public IndexModel(UserManager<User> userManager)
+        {
+            _userManager = userManager;
+        }
+
         public IActionResult OnGet()
         {
-            Username = HttpContext.Session.GetString("Username");
+            User? user = _userManager.GetUserAsync(User).Result;
 
-            if (string.IsNullOrEmpty(Username))
+            if (user == null)
             {
                 return RedirectToPage("/Account/Login");
             }
+
+            Username = user.UserName;
+
 
             Playlists = new List<Playlist>
             {

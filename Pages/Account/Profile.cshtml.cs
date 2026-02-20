@@ -35,7 +35,6 @@ namespace WebApplication2.Pages.Account
         public async Task OnPostAsync()
         {
             var user = await _userManager.GetUserAsync(User);
-            user.DisplayName = UsernameData.DisplayName;
             await _userManager.UpdateAsync(user);
 
             await _signInManager.RefreshSignInAsync(user);

@@ -5,7 +5,6 @@ using WebApplication2.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication2.Pages.Account
-
 {
     public class RegisterModel : PageModel
     {
