@@ -5,6 +5,6 @@
         public int Id { get; set; }
         public Guid UserId { get; set; }
         public string Name { get; set; } = string.Empty;
-        public DateTime DateCreated { get; set; }
+        public string DateCreated { get; set; }
     }
 }

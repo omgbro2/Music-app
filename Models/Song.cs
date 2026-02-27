@@ -4,9 +4,11 @@
     {
         public int Id { get; set; }
         public int PlaylistId { get; set; }
-        public string Title { get; set; } = string.Empty;
-        public string Artist { get; set; } = string.Empty;
-        public int DurationSeconds { get; set; }
-        public DateTime DateAdded { get; set; }
+
+        public string Title { get; set; }
+        public string Artist { get; set; }
+
+        public int Duration { get; set; }        // <- integer now
+        public string DateAdded { get; set; }
     }
 }

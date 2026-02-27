@@ -11,9 +11,9 @@
 
         <h4>MY PLAYLISTS</h4>
 
-        <a class="btn-create" asp-page="/Playlists/Create">+ Create</a>
+        <a class="btn-create" asp-page="/Playlists/Index">+ Create</a>
 
-        @foreach (var playlist in Model.Playlists)
+        @foreach (var playlist in Model.Playlists) // <= ts
         {
             <div class="playlist-item">
 

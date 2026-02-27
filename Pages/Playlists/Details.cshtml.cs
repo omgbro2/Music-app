@@ -1,31 +1,58 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System;
-using System.Collections.Generic;
+using WebApplication2.Models;
 
 namespace WebApplication2.Pages.Playlists
 {
     public class DetailsModel : PageModel
     {
-        public string PlaylistName { get; set; }
-        public List<Song> Songs { get; set; }
+        private readonly PlaylistRepository _playlistRepository;
 
-        public void OnGet(int id)
+        public DetailsModel(PlaylistRepository playlistRepository)
         {
-            PlaylistName = "Playlist " + id;
-
-            Songs = new List<Song>
-            {
-                new Song { Title = "Song 1", Artist = "Artist 1", DateAdded = DateTime.Now },
-                new Song { Title = "Song 2", Artist = "Artist 2", DateAdded = DateTime.Now }
-            };
+            _playlistRepository = playlistRepository;
         }
-    }
 
-    public class Song
-    {
+        public string PlaylistName { get; set; }
+        public List<Song> Songs { get; set; } = new();
+
+        public int PlaylistId { get; set; }
+
+        [BindProperty]
         public string Title { get; set; }
+
+        [BindProperty]
         public string Artist { get; set; }
-        public DateTime DateAdded { get; set; }
+
+        [BindProperty]
+        public int Duration { get; set; }
+
+        // --------------------
+        // LOAD PAGE
+        // --------------------
+        public async Task OnGetAsync(int id)
+        {
+            PlaylistId = id;
+
+            var playlist = await _playlistRepository.GetPlaylistByIdAsync(id);
+            PlaylistName = playlist?.Name ?? "Playlist";
+
+            Songs = await _playlistRepository.GetSongsByPlaylistAsync(id);
+        }
+
+        // --------------------
+        // ADD SONG
+        // --------------------
+        public async Task<IActionResult> OnPostAddSongAsync(int id)
+        {
+            await _playlistRepository.AddSongAsync(
+                id,
+                Title,
+                Artist,
+                Duration
+            );
+
+            return RedirectToPage(new { id });
+        }
     }
 }

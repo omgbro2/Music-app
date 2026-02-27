@@ -13,7 +13,7 @@ namespace WebApplication2.Pages
         private readonly UserManager<User> _userManager;
         public string Username { get; set; }
 
-        public List<Playlist> Playlists { get; set; }
+        public List<Playlist> Playlists { get; set; } = new List<Playlist>();
 
         public IndexModel(UserManager<User> userManager)
         {
@@ -32,20 +32,12 @@ namespace WebApplication2.Pages
             Username = user.UserName;
 
 
-            Playlists = new List<Playlist>
-            {
-                new Playlist { Id = 1, Name = "Playlist 1" },
-                new Playlist { Id = 2, Name = "Playlist 2" }
-            };
+            
 
             return Page();
         }
 
     }
 
-    public class Playlist
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
+    
 }

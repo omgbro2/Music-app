@@ -3,11 +3,27 @@
 
 <h2>@Model.PlaylistName</h2>
 
+<hr />
+
+<h4>Add Song</h4>
+
+<form method="post" asp-page-handler="AddSong">
+    <input type="hidden" name="id" value="@Model.PlaylistId" />
+
+    <input asp-for="Title" placeholder="Title" />
+    <input asp-for="Artist" placeholder="Artist" />
+    <input asp-for="Duration" type="number" placeholder="Duration (seconds)" />
+    <button type="submit">Add</button>
+</form>
+
+<hr />
+
 <table class="table">
     <thead>
         <tr>
             <th>Title</th>
             <th>Artist</th>
+            <th>Duration (sec)</th>
             <th>Date Added</th>
         </tr>
     </thead>
@@ -17,7 +33,8 @@
             <tr>
                 <td>@song.Title</td>
                 <td>@song.Artist</td>
-                <td>@song.DateAdded.ToShortDateString()</td>
+                <td>@song.Duration</td>
+                <td>@song.DateAdded</td>
             </tr>
         }
     </tbody>
