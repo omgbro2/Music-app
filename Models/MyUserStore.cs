@@ -4,13 +4,13 @@ using WebApplication2.Models;
 
 namespace WebApplication2
 {
-    public class UserStore :
+    public class MyUserStore :
         IUserPasswordStore<User>
     {
 
         private readonly string _connectionString;
 
-        public UserStore(string connectionString)
+        public MyUserStore(string connectionString)
         {
             _connectionString = connectionString;
             // Ensure the database and Users table exist
