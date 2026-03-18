@@ -2,9 +2,9 @@
 {
     public class Playlist
     {
-        public int Id { get; set; }
-        public Guid UserId { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string DateCreated { get; set; }
+        public int Id { get; set; }            // Playlist ID
+        public string Name { get; set; }       // Playlist Name
+        public string DateCreated { get; set; } // Optional
+        public string UserId { get; set; }      // Optional
     }
 }

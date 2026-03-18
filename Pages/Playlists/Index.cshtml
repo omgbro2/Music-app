@@ -1,27 +1,45 @@
 ﻿@page
 @model WebApplication2.Pages.Playlists.IndexModel
-@{
-    ViewData["Title"] = "My Playlists";
-}
 
-<h2>Hello, @Model.Username</h2>
+<h2>My Playlists</h2>
 
-<!-- CREATE NEW PLAYLIST -->
-<form method="post" asp-page-handler="Create">
-    <input asp-for="NewPlaylistName" placeholder="New playlist name" />
-    <button type="submit">Create Playlist</button>
+<!-- CREATE FORM -->
+<form method="post">
+    <div class="input-group mb-3">
+        <input type="text" name="playlistName" class="form-control" placeholder="New Playlist Name" required />
+        <button class="btn btn-primary" type="submit">Create Playlist</button>
+    </div>
 </form>
 
 <hr />
 
-<!-- LIST OF PLAYLISTS -->
-<ul>
-    @foreach (var playlist in Model.Playlists)
-    {
-        <li>
-            <a asp-page="/Playlists/Details" asp-route-id="@playlist.Id">
-                @playlist.Name
-            </a>
-        </li>
-    }
-</ul>
+@if (!Model.Playlists.Any())
+{
+    <p>No playlists yet.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var playlist in Model.Playlists)
+            {
+                <tr>
+                    <td>@playlist.Name</td>
+                    <td>
+                        <a asp-page="/Playlists/Edit" asp-route-id="@playlist.Id" class="btn btn-warning btn-sm">Edit</a>
+                        <form method="post" asp-page-handler="Delete" asp-route-id="@playlist.Id" style="display:inline">
+                            <button class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                        <a asp-page="/Playlists/Details" asp-route-id="@playlist.Id" class="btn btn-info btn-sm">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -145,3 +145,27 @@ html, body {
     flex: 1;
     padding: 40px;
 }
+
+/* ===== Playlist table styling for dark theme ===== */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #2c1e5a; /* dark purple matching your theme */
+}
+
+    table th, table td {
+        color: #eee; /* light gray text */
+        padding: 10px;
+        border-bottom: 1px solid #4b367e; /* subtle row divider */
+    }
+
+    table th {
+        font-weight: bold;
+        border-bottom: 2px solid #6a52bf;
+    }
+
+    table tr:hover {
+        background-color: #4b367e; /* lighter purple on hover */
+        cursor: pointer;
+    }

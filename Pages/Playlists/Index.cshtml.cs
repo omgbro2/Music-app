@@ -1,59 +1,55 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using WebApplication2.Models;
 
 namespace WebApplication2.Pages.Playlists
 {
     public class IndexModel : PageModel
     {
-        private readonly UserManager<User> _userManager;
         private readonly PlaylistRepository _playlistRepository;
 
-        public IndexModel(UserManager<User> userManager, PlaylistRepository playlistRepository)
+        // TEMP fixed userId
+        private readonly Guid _userId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+
+        public IndexModel(PlaylistRepository playlistRepository)
         {
-            _userManager = userManager;
             _playlistRepository = playlistRepository;
         }
 
-        public string Username { get; set; }
-        public List<Playlist> Playlists { get; set; } = new List<Playlist>();
+        public List<Playlist> Playlists { get; set; } = new();
 
         [BindProperty]
-        public string NewPlaylistName { get; set; }
+        public string PlaylistName { get; set; }
 
-        [BindProperty]
-        public int EditPlaylistId { get; set; }
-
-        [BindProperty]
-        public string EditPlaylistName { get; set; }
-
+        // LOAD PLAYLISTS
         public async Task OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                RedirectToPage("/Account/Login");
-                return;
-            }
-
-            Username = user.UserName;
-            Playlists = await _playlistRepository.GetPlaylistsByUserAsync(user.Id);
+            Playlists = await _playlistRepository.GetPlaylistsByUserAsync(_userId);
         }
 
-        public async Task<IActionResult> OnPostCreateAsync()
+        // CREATE PLAYLIST
+        public async Task<IActionResult> OnPostAsync([FromForm] string playlistName)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return RedirectToPage("/Account/Login");
-
-            if (!string.IsNullOrWhiteSpace(NewPlaylistName))
+            if (!string.IsNullOrWhiteSpace(playlistName))
             {
-                await _playlistRepository.CreatePlaylistAsync(user.Id, NewPlaylistName);
+                await _playlistRepository.CreatePlaylistAsync(_userId, playlistName);
             }
 
-            return RedirectToPage();
+            // Reload playlists after creation
+            Playlists = await _playlistRepository.GetPlaylistsByUserAsync(_userId);
+
+            return Page();
+        }
+
+        // DELETE PLAYLIST
+        public async Task<IActionResult> OnPostDeleteAsync(int id)
+        {
+            await _playlistRepository.DeletePlaylistAsync(id);
+
+            // Reload playlists after deletion
+            Playlists = await _playlistRepository.GetPlaylistsByUserAsync(_userId);
+
+            return Page();
         }
     }
 }

@@ -7,13 +7,14 @@
 
 <h4>Add Song</h4>
 
-<form method="post" asp-page-handler="AddSong">
-    <input type="hidden" name="id" value="@Model.PlaylistId" />
+<form method="post">
+    <input type="hidden" asp-for="PlaylistId" />
 
     <input asp-for="Title" placeholder="Title" />
     <input asp-for="Artist" placeholder="Artist" />
     <input asp-for="Duration" type="number" placeholder="Duration (seconds)" />
-    <button type="submit">Add</button>
+
+    <button type="submit" class="btn btn-success">Add</button>
 </form>
 
 <hr />
@@ -23,7 +24,7 @@
         <tr>
             <th>Title</th>
             <th>Artist</th>
-            <th>Duration (sec)</th>
+            <th>Duration</th>
             <th>Date Added</th>
         </tr>
     </thead>
