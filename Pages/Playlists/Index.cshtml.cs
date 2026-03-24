@@ -8,9 +8,6 @@ namespace WebApplication2.Pages.Playlists
     {
         private readonly PlaylistRepository _playlistRepository;
 
-        // TEMP fixed userId
-        private readonly Guid _userId = Guid.Parse("11111111-1111-1111-1111-111111111111");
-
         public IndexModel(PlaylistRepository playlistRepository)
         {
             _playlistRepository = playlistRepository;

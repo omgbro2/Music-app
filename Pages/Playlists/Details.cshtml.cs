@@ -36,7 +36,6 @@ namespace WebApplication2.Pages.Playlists
             var playlist = await _playlistRepository.GetPlaylistByIdAsync(id);
             if (playlist == null)
             {
-                // Playlist not found - return 404 or show message
                 return NotFound();
             }
 
@@ -51,11 +50,10 @@ namespace WebApplication2.Pages.Playlists
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(Title) || string.IsNullOrWhiteSpace(Artist) || Duration <= 0)
             {
-                // Invalid input - reload page with error
-                Songs = await _playlistRepository.GetSongsByPlaylistAsync(id);
-                var playlist = await _playlistRepository.GetPlaylistByIdAsync(id);
+                // Reload state for redisplay
+                Songs = await _playlistRepository.GetSongsByPlaylistAsync(PlaylistId, userId);
+                var playlist = await _playlistRepository.GetPlaylistByIdAsync(PlaylistId, userId);
                 PlaylistName = playlist?.Name ?? "Playlist";
-                PlaylistId = id;
                 return Page();
             }
 
