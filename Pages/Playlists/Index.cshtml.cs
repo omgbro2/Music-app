@@ -23,6 +23,9 @@ namespace WebApplication2.Pages.Playlists
         // --- PROPERTIES ---
         public List<Playlist> Playlists { get; set; } = new();
 
+        // Selected playlist shown on the right
+        public Playlist CurrentPlaylist { get; set; }
+
         [BindProperty]
         public string PlaylistName { get; set; }
 
@@ -45,10 +48,19 @@ namespace WebApplication2.Pages.Playlists
         // --- HANDLERS ---
 
         // IELÂDÇT PLAYLISTES
-        public async Task OnGetAsync()
+        // Accept optional id to select a playlist when user clicks on the left side
+        public async Task OnGetAsync(int? id)
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             Playlists = await _playlistRepository.GetPlaylistsByUserAsync(userId);
+
+            // Choose the requested playlist if present, otherwise the first one
+            CurrentPlaylist = id.HasValue
+                ? Playlists.FirstOrDefault(p => p.Id == id.Value)
+                : Playlists.FirstOrDefault();
+
+            // set TargetPlaylistId so forms bound to it default to the selected playlist
+            TargetPlaylistId = CurrentPlaylist?.Id ?? 0;
         }
 
         // IZVEIDOT JAUNU PLAYLISTI
@@ -78,7 +90,8 @@ namespace WebApplication2.Pages.Playlists
                 await _playlistRepository.AddSongAsync(TargetPlaylistId, SongTitle, SongArtist, totalSeconds, userId);
             }
 
-            return RedirectToPage();
+            // stay on the same page and show the playlist that was acted on
+            return RedirectToPage(new { id = TargetPlaylistId });
         }
 
         // DZÇST PLAYLISTI

@@ -45,18 +45,14 @@
         <!-- 🎵 LABĀ PUSE: Aktīvā Playlist (Saturs) -->
         <div class="col-md-9 p-4">
 
-            <!-- Ja ir atlasīta playliste (šobrīd parādam pirmo vai atlasīto) -->
-            @{
-                var current = Model.Playlists.FirstOrDefault();
-            }
-
-            @if (current != null)
+            @* Use the selected playlist provided by the PageModel *@
+            @if (Model.CurrentPlaylist != null)
             {
                 <div class="d-flex align-items-center mb-4">
                     <div class="p-4 bg-purple rounded me-4" style="background: #a855f7; font-size: 2rem;">🎵</div>
                     <div>
-                        <h1 class="display-5 fw-bold">@current.Name <small>📝</small></h1>
-                        <p class="text-muted">@((current.Songs?.Count) ?? 0) elements • Created: @DateTime.Now.ToShortDateString()</p>
+                        <h1 class="display-5 fw-bold">@Model.CurrentPlaylist.Name <small>📝</small></h1>
+                        <p class="text-muted">@((Model.CurrentPlaylist.Songs?.Count) ?? 0) elements • Created: @DateTime.Now.ToShortDateString()</p>
                     </div>
                 </div>
 
@@ -64,7 +60,7 @@
                 <div class="card bg-dark text-white p-4 mb-4 shadow" style="max-width: 500px; border-radius: 15px;">
                     <h5 class="mb-3">ADD NEW SONG</h5>
                     <form method="post" asp-page-handler="AddSong">
-                        <input asp-for="TargetPlaylistId" type="hidden" value="@current.Id" />
+                        <input type="hidden" asp-for="TargetPlaylistId" value="@Model.CurrentPlaylist.Id" />
 
                         <div class="mb-2">
                             <label class="small text-muted">Title</label>
@@ -100,10 +96,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (current.Songs != null && current.Songs.Any())
+                        @if (Model.CurrentPlaylist.Songs != null && Model.CurrentPlaylist.Songs.Any())
                         {
                             int counter = 1;
-                            @foreach (var song in current.Songs)
+                            @foreach (var song in Model.CurrentPlaylist.Songs)
                             {
                                 <tr>
                                     <td>@counter</td>
