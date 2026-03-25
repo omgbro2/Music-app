@@ -44,14 +44,21 @@ namespace WebApplication2.Pages.Account
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToPage("/Account/Login");
 
+            
             user.UserName = UsernameData.DisplayName;
-            user.AboutMe = UsernameData.AboutMe; // Save the About info
+            user.DisplayName = UsernameData.DisplayName;
+            user.AboutMe = UsernameData.AboutMe; 
 
-            await _userManager.UpdateAsync(user);
-            await _signInManager.RefreshSignInAsync(user);
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                await _signInManager.RefreshSignInAsync(user);
+                return RedirectToPage();
+            }
 
-            return RedirectToPage(); // Refresh the profile page
+            return Page();
         }
+
     }
 
 }
