@@ -107,7 +107,7 @@ namespace WebApplication2.Pages.Playlists
         }
 
         // DZÇST PLAYLISTI
-        public async Task<IActionResult> OnPostDeleteAsync(int id)
+        public async Task<IActionResult> OnPostDeletePlaylistAsync(int id)
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             await _playlistRepository.DeletePlaylistAsync(id, userId);

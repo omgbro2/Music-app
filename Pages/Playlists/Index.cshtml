@@ -29,15 +29,28 @@
             <div class="list-group">
                 @foreach (var playlist in Model.Playlists)
                 {
-                    <a asp-page="/Playlists/Index" asp-route-id="@playlist.Id"
-                       class="list-group-item list-group-item-action bg-transparent text-white border-0 d-flex align-items-center mb-2"
-                       style="background: rgba(255,255,255,0.05) !important; border-radius: 10px;">
-                        <div class="me-3 p-2 bg-purple rounded" style="background: #a855f7;">🎵</div>
-                        <div>
-                            <div class="fw-bold">@playlist.Name</div>
-                            <small class="text-muted">@((playlist.Songs?.Count) ?? 0) elements</small>
-                        </div>
-                    </a>
+                    <div class="d-flex align-items-center mb-2 bg-dark-subtle rounded-3"
+                         style="background: rgba(255,255,255,0.05) !important; border-radius: 10px; transition: 0.3s;">
+
+                        <!-- Galvenā saite (Playlist atvēršanai) -->
+                        <a asp-page="/Playlists/Index" asp-route-id="@playlist.Id"
+                           class="text-white border-0 d-flex align-items-center p-2 flex-grow-1 text-decoration-none">
+                            <div class="me-3 p-2 bg-purple rounded" style="background: #a855f7;">🎵</div>
+                            <div>
+                                <div class="fw-bold">@playlist.Name</div>
+                                <small class="text-muted">@((playlist.Songs?.Count) ?? 0) elements</small>
+                            </div>
+                        </a>
+
+                        <!-- DZĒŠANAS FORMA (Miskastes poga) -->
+                        <form method="post" asp-page-handler="DeletePlaylist"
+                              onsubmit="return confirm('Dzēst @playlist.Name?');" class="pe-2">
+                            <input type="hidden" name="id" value="@playlist.Id" />
+                            <button type="submit" class="btn btn-sm btn-link text-danger text-decoration-none shadow-none p-0">
+                                <small>🗑️</small>
+                            </button>
+                        </form>
+                    </div>
                 }
             </div>
         </div>
