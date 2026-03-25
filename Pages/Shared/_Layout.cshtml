@@ -9,20 +9,39 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebApplication2.styles.css" asp-append-version="true" />
 </head>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <body class="app-bg">
 
-    <div class="app-layout">
+    <div class="flex-grow-1">
 
-        <div class="sidebar">
-            <a asp-page="/Index" class="btn-create">🏠 Home</a>
-            <a asp-page="/Account/Profile" class="btn-create">👤 My Account</a>
-            <a asp-page="/Playlists/Index" class="btn-create">🎶 My Playlists</a>
+        <!-- 🔝 TOP BAR -->
+        <div class="d-flex justify-content-end align-items-center p-3"
+             style="background: rgba(0,0,0,0.2);">
 
+            <!-- Profile Dropdown -->
+            <div class="dropdown">
 
-            <a asp-page="/Account/Logout" class="btn-logout">Logout</a>
+                <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    👤 Profile
+                </button>
+
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <a class="dropdown-item" href="/Account/Profile">My Profile</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="/Account/Logout">Logout</a>
+                    </li>
+                </ul>
+
+            </div>
+
         </div>
 
-        <div class="main-content">
+        <!-- PAGE CONTENT -->
+        <div class="p-4">
             @RenderBody()
         </div>
 

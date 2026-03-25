@@ -18,7 +18,12 @@ namespace WebApplication2.Pages.Account
         public async Task<IActionResult> OnGetAsync()
         {
             await _signInManager.SignOutAsync();
-            return Redirect("/");
+            return Redirect("/Account/Login");
+        }
+        public async Task<IActionResult> OnPostAsync()
+        {
+            await _signInManager.SignOutAsync();
+            return Redirect("/Account/Login");
         }
     }
 }

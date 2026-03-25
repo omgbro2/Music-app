@@ -7,10 +7,51 @@ html, body {
 }
 
     /* GLOBAL APP BACKGROUND (used after login) */
-    body.app-bg {
-        background: linear-gradient(135deg, #1e1e2f, #3a1c71);
-        color: white;
+
+.dropdown-menu {
+    background-color: #1a0033;
+    border-radius: 10px;
+}
+
+.dropdown-item {
+    color: white;
+}
+
+    .dropdown-item:hover {
+        background-color: #7a5cff;
     }
+
+body {
+    background: linear-gradient(135deg, #0a0a1f, #1a0033, #2b0a5a);
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Card style (used everywhere) */
+.card-dark {
+    background: rgba(20, 20, 40, 0.9);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 0 25px rgba(128, 0, 255, 0.3);
+}
+
+/* Buttons */
+.btn-purple {
+    background: linear-gradient(45deg, #ff4fd8, #7a5cff);
+    border: none;
+    color: white;
+    border-radius: 20px;
+    padding: 8px 20px;
+}
+
+    .btn-purple:hover {
+        opacity: 0.85;
+    }
+
+/* Inputs */
+input {
+    border-radius: 10px !important;
+}
 
 /* ================= LOGIN PAGE ================= */
 
@@ -66,6 +107,8 @@ html, body {
 
 
 /* ================= MAIN APP ================= */
+
+
 
 .app-layout {
     display: flex;

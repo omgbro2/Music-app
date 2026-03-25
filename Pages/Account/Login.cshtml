@@ -5,24 +5,22 @@
 <h2>Login</h2>
 
 <form method="post" asp-page-handler="Login">
-    <div>
-        <label asp-for="Login.UserName"></label>
-        <input asp-for="Login.UserName" />
-        <span asp-validation-for="Login.UserName"></span>
+    <div class="d-flex justify-content-center align-items-center vh-100">
+        <div class="card-dark text-center" style="width: 350px;">
+            <h3 class="mb-3">EXISTING USER</h3>
+
+            <input asp-for="Login.UserName" class="form-control mb-2" placeholder="Username" />
+            <input asp-for="Login.Password" class="form-control mb-3" type="password" placeholder="Password" />
+
+            <button type="submit" class="btn-purple w-100 mb-2">Log in</button>
+
+          @*   <p>or</p>
+
+            <button class="btn btn-light w-100">New User</button> *@
+        </div>
     </div>
 
-    <div>
-        <label asp-for="Login.Password"></label>
-        <input asp-for="Login.Password" type="password" />
-        <span asp-validation-for="Login.Password"></span>
-    </div>
-
-    <div>
-        <input asp-for="Login.RememberMe" />
-        <label asp-for="Login.RememberMe"></label>
-    </div>
-
-    <button type="submit">Login</button>
+    @* <button type="submit">Login</button> *@
 </form>
 
 <p>

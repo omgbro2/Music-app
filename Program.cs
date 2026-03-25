@@ -5,11 +5,14 @@ using WebApplication2;
 using WebApplication2.Models;
 using System.Security.Claims;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // --------------------
 // Services
 // --------------------
+
+builder.Services.AddSession();
 
 builder.Services.AddRazorPages();
 
@@ -110,6 +113,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthentication();   // IMPORTANT
 app.UseAuthorization();
