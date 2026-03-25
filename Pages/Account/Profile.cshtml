@@ -5,38 +5,37 @@
 
 @{
     var user = await UserManager.GetUserAsync(User);
-    if (user == null)
-    {
-        Response.Redirect("/Account/Login");
-    }
 }
-
-
 
 <h2>User Profile</h2>
 
-<div class="card-dark d-flex align-items-center">
+<div class="card-dark d-flex align-items-center p-4" style="background: rgba(255,255,255,0.05); border-radius: 15px;">
 
-    <img src="/images/default-user.png"
-         style="width:100px; border-radius:50%; margin-right:20px;" />
+    <img src="/images/default-user.png" style="width:100px; border-radius:50%; margin-right:20px;" />
 
-    <div>
-        <h2>{user}</h2>
+    <div class="flex-grow-1">
+        @* Shows actual username instead of {user} *@
+        <h2 class="fw-bold">@user?.UserName</h2>
         <p>Hello 👋</p>
 
-        <p><b>About:</b> ...</p>
-        <p>Account created: DD/MM/YYYY</p>
+        @* Shows actual About info *@
+        <p><b>About:</b> @user?.AboutMe</p>
+        
+        @* Shows actual creation date *@
+        <p class="text-muted">Account created: @user?.DateCreated.ToString("dd/MM/yyyy")</p>
     </div>
-    <form method="post">
-        <div><strong>Username:</strong> @user?.UserName</div>
-        <div>
-            <label asp-for="UsernameData.DisplayName"></label>
-            <input asp-for="UsernameData.DisplayName" value="@user?.UserName" />
-            <span asp-validation-for="UsernameData.DisplayName"></span>
+
+    <form method="post" class="ms-4">
+        <div class="mb-2">
+            <label>Username</label>
+            <input asp-for="UsernameData.DisplayName" class="form-control bg-dark text-white" />
         </div>
-        <button type="submit">Update Profile</button>
+        <div class="mb-2">
+            <label>About Me</label>
+            <textarea asp-for="UsernameData.AboutMe" class="form-control bg-dark text-white"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 mt-2">Update Profile</button>
     </form>
 </div>
 
-<a asp-page="/Index">Back to Home</a>
-
+<a asp-page="/Index" class="btn btn-link mt-3">Back to Home</a>
