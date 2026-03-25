@@ -113,5 +113,22 @@ namespace WebApplication2.Pages.Playlists
             await _playlistRepository.DeletePlaylistAsync(id, userId);
             return RedirectToPage();
         }
+
+        // --- NEW: UPDATE SONG INFO ---
+        public async Task<IActionResult> OnPostUpdateSongAsync(int songId, int playlistId, string updatedTitle, string updatedArtist)
+        {
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (!string.IsNullOrWhiteSpace(updatedTitle))
+            {
+                // This calls the repository to save changes. 
+                // Ensure your PlaylistRepository has an 'UpdateSongAsync' method.
+                await _playlistRepository.UpdateSongAsync(songId, updatedTitle, updatedArtist, userId);
+            }
+
+            // Refresh the page on the current playlist
+            return RedirectToPage(new { id = playlistId });
+        }
+
     }
 }

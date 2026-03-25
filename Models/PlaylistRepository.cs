@@ -250,5 +250,27 @@ namespace WebApplication2.Models
 
             await command.ExecuteNonQueryAsync();
         }
+        public async Task UpdateSongAsync(int songId, string title, string artist, Guid userId)
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            await connection.OpenAsync();
+
+            // This query updates the song only if it belongs to a playlist owned by the current user
+            var command = connection.CreateCommand();
+            command.CommandText = @"
+        UPDATE Songs
+        SET Title = $title, Artist = $artist
+        WHERE Id = $id AND PlaylistId IN (
+            SELECT Id FROM Playlists WHERE UserId = $userId
+        )";
+
+            command.Parameters.AddWithValue("$title", title);
+            command.Parameters.AddWithValue("$artist", artist);
+            command.Parameters.AddWithValue("$id", songId);
+            command.Parameters.AddWithValue("$userId", userId.ToString());
+
+            await command.ExecuteNonQueryAsync();
+        }
+
     }
 }

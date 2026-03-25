@@ -116,25 +116,40 @@
                             @foreach (var song in Model.CurrentPlaylist.Songs)
                             {
                                 <tr>
-                                    <td>@counter</td>
-                                    <td>@song.Title</td>
-                                    <td>@song.Artist</td>
-                                    <td>@song.DateAdded</td>
-                                    <td>
-                                        @String.Format("{0}:{1:D2}", song.Duration / 60, song.Duration % 60)
-                                    </td>
-                                    <td class="text-end">
-                                        <form method="post" asp-page-handler="DeleteSong" style="display:inline">
-                                            <input type="hidden" name="songId" value="@song.Id" />
-                                            <input type="hidden" name="playlistId" value="@Model.CurrentPlaylist.Id" />
-                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete song">🗑️</button>
-                                        </form>
-                                    </td>
+                                    @* Use a form for each row so we can submit the update *@
+                                    <form method="post" asp-page-handler="UpdateSong">
+                                        <input type="hidden" name="songId" value="@song.Id" />
+                                        <input type="hidden" name="playlistId" value="@Model.CurrentPlaylist.Id" />
+
+                                        <td>@counter</td>
+                                        <td>
+                                            <input name="updatedTitle" value="@song.Title" 
+                                                   class="form-control form-control-sm bg-dark text-white border-0" />
+                                        </td>
+                                        <td>
+                                            <input name="updatedArtist" value="@song.Artist" 
+                                                   class="form-control form-control-sm bg-dark text-white border-0" />
+                                        </td>
+                                        <td>@song.@DateTime.Now.ToShortDateString()</td>
+                                        <td>
+                                            @String.Format("{0}:{1:D2}", song.Duration / 60, song.Duration % 60)
+                                        </td>
+                                        <td class="text-end">
+                                            @* Save Button *@
+                                            <button type="submit" class="btn btn-sm btn-link text-success p-0 me-2" title="Save">💾</button>
+                        
+                                            @* Delete Button (Keep your existing one) *@
+                                            <button type="submit" asp-page-handler="DeleteSong" 
+                                                    class="btn btn-sm btn-link text-danger p-0" 
+                                                    onclick="return confirm('Delete?');">🗑️</button>
+                                        </td>
+                                    </form>
                                 </tr>
                                 counter++;
                             }
                         }
                     </tbody>
+
                 </table>
             }
             else
