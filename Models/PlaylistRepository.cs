@@ -82,6 +82,12 @@ namespace WebApplication2.Models
                 });
             }
 
+            // Load songs for each playlist so Razor can access playlist.Songs
+            foreach (var p in playlists)
+            {
+                p.Songs = await GetSongsByPlaylistAsync(p.Id, userId);
+            }
+
             return playlists;
         }
 

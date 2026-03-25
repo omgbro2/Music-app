@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace WebApplication2.Pages.Playlists
 {
@@ -19,41 +20,72 @@ namespace WebApplication2.Pages.Playlists
             _playlistRepository = playlistRepository;
         }
 
+        // --- PROPERTIES ---
         public List<Playlist> Playlists { get; set; } = new();
 
         [BindProperty]
         public string PlaylistName { get; set; }
 
-            // LOAD PLAYLISTS
+        // Ðie lauki ir nepiecieðami dziesmu pievienoðanai (lai nebûtu kïûdu CS1061)
+        [BindProperty]
+        public int TargetPlaylistId { get; set; }
+
+        [BindProperty]
+        public string SongTitle { get; set; }
+
+        [BindProperty]
+        public string SongArtist { get; set; }
+
+        [BindProperty]
+        public int Minutes { get; set; }
+
+        [BindProperty]
+        public int Seconds { get; set; }
+
+        // --- HANDLERS ---
+
+        // IELÂDÇT PLAYLISTES
         public async Task OnGetAsync()
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             Playlists = await _playlistRepository.GetPlaylistsByUserAsync(userId);
         }
 
-        // CREATE PLAYLIST
-        public async Task<IActionResult> OnPostAsync([FromForm] string playlistName)
+        // IZVEIDOT JAUNU PLAYLISTI
+        public async Task<IActionResult> OnPostAsync()
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (!string.IsNullOrWhiteSpace(playlistName))
+            if (!string.IsNullOrWhiteSpace(PlaylistName))
             {
-                await _playlistRepository.CreatePlaylistAsync(userId, playlistName);
+                await _playlistRepository.CreatePlaylistAsync(userId, PlaylistName);
             }
 
-            // Reload playlists after creation
-            Playlists = await _playlistRepository.GetPlaylistsByUserAsync(userId);
-
-            return Page();
+            return RedirectToPage();
         }
 
-        // DELETE PLAYLIST
+        // PIEVIENOT DZIESMU KONKRÇTAI PLAYLISTEI
+        public async Task<IActionResult> OnPostAddSongAsync()
+        {
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (!string.IsNullOrWhiteSpace(SongTitle) && TargetPlaylistId > 0)
+            {
+                // Convert minutes/seconds to total seconds (repository stores Duration as int)
+                int totalSeconds = (Minutes * 60) + Seconds;
+
+                // Use repository method that requires userId for ownership checks
+                await _playlistRepository.AddSongAsync(TargetPlaylistId, SongTitle, SongArtist, totalSeconds, userId);
+            }
+
+            return RedirectToPage();
+        }
+
+        // DZÇST PLAYLISTI
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
             await _playlistRepository.DeletePlaylistAsync(id, userId);
-
             return RedirectToPage();
         }
     }
