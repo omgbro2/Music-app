@@ -94,6 +94,18 @@ namespace WebApplication2.Pages.Playlists
             return RedirectToPage(new { id = TargetPlaylistId });
         }
 
+        // DELETE A SONG
+        public async Task<IActionResult> OnPostDeleteSongAsync(int songId, int playlistId)
+        {
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            // Repository will ensure ownership before deleting
+            await _playlistRepository.DeleteSongAsync(songId, userId);
+
+            // stay on the same playlist after deletion
+            return RedirectToPage(new { id = playlistId });
+        }
+
         // DZÇST PLAYLISTI
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {

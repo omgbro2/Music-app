@@ -230,5 +230,25 @@ namespace WebApplication2.Models
 
             await command.ExecuteNonQueryAsync();
         }
+
+        // Delete a single song but only if it belongs to a playlist owned by the user
+        public async Task DeleteSongAsync(int songId, Guid userId)
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            await connection.OpenAsync();
+
+            var command = connection.CreateCommand();
+            command.CommandText = @"
+                DELETE FROM Songs
+                WHERE Id = $songId
+                  AND PlaylistId IN (
+                      SELECT Id FROM Playlists WHERE UserId = $userId
+                  );";
+
+            command.Parameters.AddWithValue("$songId", songId);
+            command.Parameters.AddWithValue("$userId", userId.ToString());
+
+            await command.ExecuteNonQueryAsync();
+        }
     }
 }

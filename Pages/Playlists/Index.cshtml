@@ -107,7 +107,13 @@
                                     <td>@song.Artist</td>
                                     <td>@song.DateAdded</td>
                                     <td>@song.Duration</td>
-                                    <td class="text-end">🗑️</td>
+                                    <td class="text-end">
+                                        <form method="post" asp-page-handler="DeleteSong" style="display:inline">
+                                            <input type="hidden" name="songId" value="@song.Id" />
+                                            <input type="hidden" name="playlistId" value="@Model.CurrentPlaylist.Id" />
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete song">🗑️</button>
+                                        </form>
+                                    </td>
                                 </tr>
                                 counter++;
                             }
