@@ -1,9 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebApplication2.Models;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace WebApplication2.Pages.Playlists
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly PlaylistRepository _playlistRepository;
@@ -18,22 +24,25 @@ namespace WebApplication2.Pages.Playlists
         [BindProperty]
         public string PlaylistName { get; set; }
 
-        // LOAD PLAYLISTS
+            // LOAD PLAYLISTS
         public async Task OnGetAsync()
         {
-            Playlists = await _playlistRepository.GetPlaylistsByUserAsync(_userId);
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            Playlists = await _playlistRepository.GetPlaylistsByUserAsync(userId);
         }
 
         // CREATE PLAYLIST
         public async Task<IActionResult> OnPostAsync([FromForm] string playlistName)
         {
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
             if (!string.IsNullOrWhiteSpace(playlistName))
             {
-                await _playlistRepository.CreatePlaylistAsync(_userId, playlistName);
+                await _playlistRepository.CreatePlaylistAsync(userId, playlistName);
             }
 
             // Reload playlists after creation
-            Playlists = await _playlistRepository.GetPlaylistsByUserAsync(_userId);
+            Playlists = await _playlistRepository.GetPlaylistsByUserAsync(userId);
 
             return Page();
         }
@@ -41,12 +50,11 @@ namespace WebApplication2.Pages.Playlists
         // DELETE PLAYLIST
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
-            await _playlistRepository.DeletePlaylistAsync(id);
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            // Reload playlists after deletion
-            Playlists = await _playlistRepository.GetPlaylistsByUserAsync(_userId);
+            await _playlistRepository.DeletePlaylistAsync(id, userId);
 
-            return Page();
+            return RedirectToPage();
         }
     }
 }

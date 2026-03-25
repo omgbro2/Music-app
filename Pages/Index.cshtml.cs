@@ -4,7 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using WebApplication2.Models;
+using System.Security.Claims;
 
+using Microsoft.AspNetCore.Authorization;
+
+[Authorize]
+public class IndexModel : PageModel;
 
 namespace WebApplication2.Pages
 {

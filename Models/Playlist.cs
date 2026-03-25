@@ -1,4 +1,7 @@
-﻿namespace WebApplication2.Models
+﻿using System.Security.Claims;
+
+namespace WebApplication2.Models
+
 {
     public class Playlist
     {

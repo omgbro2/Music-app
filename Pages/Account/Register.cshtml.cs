@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebApplication2.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace WebApplication2.Pages.Account
 {
@@ -60,7 +61,7 @@ namespace WebApplication2.Pages.Account
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
-                return Redirect("/");
+                return RedirectToPage("/Playlists/Index");
             }
 
             ErrorMessage = string.Join(", ", result.Errors.Select(e => e.Description));

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebApplication2.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace WebApplication2.Pages.Account
 {
@@ -50,7 +51,7 @@ namespace WebApplication2.Pages.Account
                 lockoutOnFailure: false);
 
             if (result.Succeeded)
-                return Redirect("/");
+                return RedirectToPage("/Playlists/Index");
 
             ErrorMessage = "Invalid login attempt.";
             return Page();

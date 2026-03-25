@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebApplication2.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace WebApplication2.Pages.Account
 {

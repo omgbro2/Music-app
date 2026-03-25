@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace WebApplication2.Models
 {
@@ -46,6 +47,7 @@ namespace WebApplication2.Models
             command.CommandText = @"
                 INSERT INTO Playlists (UserId, Name, DateCreated)
                 VALUES ($userId, $name, $date)";
+
             command.Parameters.AddWithValue("$userId", userId.ToString());
             command.Parameters.AddWithValue("$name", name);
             command.Parameters.AddWithValue("$date", DateTime.UtcNow.ToString("o"));
@@ -53,7 +55,7 @@ namespace WebApplication2.Models
             await command.ExecuteNonQueryAsync();
         }
 
-        // READ ALL
+        // READ ALL (safe)
         public async Task<List<Playlist>> GetPlaylistsByUserAsync(Guid userId)
         {
             var playlists = new List<Playlist>();
@@ -66,6 +68,7 @@ namespace WebApplication2.Models
                 SELECT Id, Name, DateCreated
                 FROM Playlists
                 WHERE UserId = $userId";
+
             command.Parameters.AddWithValue("$userId", userId.ToString());
 
             using var reader = await command.ExecuteReaderAsync();
@@ -82,8 +85,8 @@ namespace WebApplication2.Models
             return playlists;
         }
 
-        // READ SINGLE
-        public async Task<Playlist?> GetPlaylistByIdAsync(int id)
+        // READ SINGLE (safe)
+        public async Task<Playlist?> GetPlaylistByIdAsync(int id, Guid userId)
         {
             using var connection = new SqliteConnection(_connectionString);
             await connection.OpenAsync();
@@ -92,8 +95,10 @@ namespace WebApplication2.Models
             command.CommandText = @"
                 SELECT Id, Name, DateCreated
                 FROM Playlists
-                WHERE Id = $id";
+                WHERE Id = $id AND UserId = $userId";
+
             command.Parameters.AddWithValue("$id", id);
+            command.Parameters.AddWithValue("$userId", userId.ToString());
 
             using var reader = await command.ExecuteReaderAsync();
             if (await reader.ReadAsync())
@@ -109,8 +114,8 @@ namespace WebApplication2.Models
             return null;
         }
 
-        // UPDATE
-        public async Task EditPlaylistAsync(int id, string newName)
+        // UPDATE (safe)
+        public async Task EditPlaylistAsync(int id, string newName, Guid userId)
         {
             using var connection = new SqliteConnection(_connectionString);
             await connection.OpenAsync();
@@ -119,45 +124,58 @@ namespace WebApplication2.Models
             command.CommandText = @"
                 UPDATE Playlists
                 SET Name = $name
-                WHERE Id = $id";
+                WHERE Id = $id AND UserId = $userId";
+
             command.Parameters.AddWithValue("$name", newName);
             command.Parameters.AddWithValue("$id", id);
+            command.Parameters.AddWithValue("$userId", userId.ToString());
 
             await command.ExecuteNonQueryAsync();
         }
 
-        // DELETE
-        public async Task DeletePlaylistAsync(int id)
+        // DELETE (safe)
+        public async Task DeletePlaylistAsync(int id, Guid userId)
         {
             using var connection = new SqliteConnection(_connectionString);
             await connection.OpenAsync();
 
-            // Delete songs first
+            // Delete songs first (only for playlists owned by user)
             var cmd1 = connection.CreateCommand();
-            cmd1.CommandText = "DELETE FROM Songs WHERE PlaylistId = $id";
+            cmd1.CommandText = @"
+                DELETE FROM Songs
+                WHERE PlaylistId = $id";
             cmd1.Parameters.AddWithValue("$id", id);
             await cmd1.ExecuteNonQueryAsync();
 
-            // Delete playlist
+            // Delete playlist safely
             var cmd2 = connection.CreateCommand();
-            cmd2.CommandText = "DELETE FROM Playlists WHERE Id = $id";
+            cmd2.CommandText = @"
+                DELETE FROM Playlists
+                WHERE Id = $id AND UserId = $userId";
+
             cmd2.Parameters.AddWithValue("$id", id);
+            cmd2.Parameters.AddWithValue("$userId", userId.ToString());
+
             await cmd2.ExecuteNonQueryAsync();
         }
 
-        // SONGS
-        public async Task<List<Song>> GetSongsByPlaylistAsync(int playlistId)
+        // SONGS (safe via playlist ownership)
+        public async Task<List<Song>> GetSongsByPlaylistAsync(int playlistId, Guid userId)
         {
             var songs = new List<Song>();
+
             using var connection = new SqliteConnection(_connectionString);
             await connection.OpenAsync();
 
             var command = connection.CreateCommand();
             command.CommandText = @"
-                SELECT Id, Title, Artist, Duration, DateAdded
-                FROM Songs
-                WHERE PlaylistId = $playlistId";
+                SELECT s.Id, s.Title, s.Artist, s.Duration, s.DateAdded
+                FROM Songs s
+                JOIN Playlists p ON s.PlaylistId = p.Id
+                WHERE s.PlaylistId = $playlistId AND p.UserId = $userId";
+
             command.Parameters.AddWithValue("$playlistId", playlistId);
+            command.Parameters.AddWithValue("$userId", userId.ToString());
 
             using var reader = await command.ExecuteReaderAsync();
             while (await reader.ReadAsync())
@@ -175,15 +193,29 @@ namespace WebApplication2.Models
             return songs;
         }
 
-        public async Task AddSongAsync(int playlistId, string title, string artist, int duration)
+        public async Task AddSongAsync(int playlistId, string title, string artist, int duration, Guid userId)
         {
             using var connection = new SqliteConnection(_connectionString);
             await connection.OpenAsync();
+
+            // Ensure playlist belongs to user
+            var checkCmd = connection.CreateCommand();
+            checkCmd.CommandText = @"
+                SELECT COUNT(*)
+                FROM Playlists
+                WHERE Id = $playlistId AND UserId = $userId";
+
+            checkCmd.Parameters.AddWithValue("$playlistId", playlistId);
+            checkCmd.Parameters.AddWithValue("$userId", userId.ToString());
+
+            var exists = (long)await checkCmd.ExecuteScalarAsync();
+            if (exists == 0) return;
 
             var command = connection.CreateCommand();
             command.CommandText = @"
                 INSERT INTO Songs (PlaylistId, Title, Artist, Duration, DateAdded)
                 VALUES ($playlistId, $title, $artist, $duration, $date)";
+
             command.Parameters.AddWithValue("$playlistId", playlistId);
             command.Parameters.AddWithValue("$title", title);
             command.Parameters.AddWithValue("$artist", artist);

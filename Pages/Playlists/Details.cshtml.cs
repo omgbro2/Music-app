@@ -1,11 +1,15 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebApplication2.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication2.Pages.Playlists
 {
+    [Authorize]
     public class DetailsModel : PageModel
     {
         private readonly PlaylistRepository _playlistRepository;
@@ -31,9 +35,11 @@ namespace WebApplication2.Pages.Playlists
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
             PlaylistId = id;
 
-            var playlist = await _playlistRepository.GetPlaylistByIdAsync(id);
+            var playlist = await _playlistRepository.GetPlaylistByIdAsync(id, userId);
             if (playlist == null)
             {
                 return NotFound();
@@ -41,23 +47,25 @@ namespace WebApplication2.Pages.Playlists
 
             PlaylistName = playlist.Name;
 
-            Songs = await _playlistRepository.GetSongsByPlaylistAsync(id);
+            Songs = await _playlistRepository.GetSongsByPlaylistAsync(id, userId);
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostAddSongAsync(int id)
         {
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(Title) || string.IsNullOrWhiteSpace(Artist) || Duration <= 0)
             {
-                // Reload state for redisplay
-                Songs = await _playlistRepository.GetSongsByPlaylistAsync(PlaylistId, userId);
-                var playlist = await _playlistRepository.GetPlaylistByIdAsync(PlaylistId, userId);
+                Songs = await _playlistRepository.GetSongsByPlaylistAsync(id, userId);
+                var playlist = await _playlistRepository.GetPlaylistByIdAsync(id, userId);
                 PlaylistName = playlist?.Name ?? "Playlist";
+                PlaylistId = id;
                 return Page();
             }
 
-            await _playlistRepository.AddSongAsync(id, Title, Artist, Duration);
+            await _playlistRepository.AddSongAsync(id, Title, Artist, Duration, userId);
 
             return RedirectToPage(new { id });
         }

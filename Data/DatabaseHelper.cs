@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
+using System.Security.Claims;
 
 public static class DatabaseHelper
 {

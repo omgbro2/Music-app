@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System;
 using Microsoft.Data.Sqlite;
+using Microsoft.AspNetCore.Identity;
 using WebApplication2;
 using WebApplication2.Models;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,14 +25,11 @@ builder.Services.AddAuthorization();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// ✅ Register repositories (NO EF)
-builder.Services.AddSingleton<PlaylistRepository>(
-    new PlaylistRepository(connectionString));
+// Register repositories as scoped (per-request)
+builder.Services.AddScoped<PlaylistRepository>(sp => new PlaylistRepository(connectionString));
+builder.Services.AddScoped<SongRepository>(sp => new SongRepository(connectionString));
 
-builder.Services.AddSingleton<SongRepository>(
-    new SongRepository(connectionString));
-
-// ✅ Custom User Store
+// Custom User Store
 builder.Services.AddScoped<IUserStore<User>>(
     serviceProvider => new MyUserStore(connectionString));
 
@@ -42,7 +41,6 @@ builder.Services.AddIdentityCore<User>(options =>
 })
 .AddSignInManager()
 .AddDefaultTokenProviders();
-
 
 // --------------------
 // CREATE TABLES (Auto Run)
@@ -56,28 +54,33 @@ void CreateTables(string connString)
     var command = connection.CreateCommand();
     command.CommandText = @"
 
+    -- Users: use TEXT for GUID id (matches MyUserStore)
     CREATE TABLE IF NOT EXISTS Users (
-        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+        Id TEXT PRIMARY KEY,
         UserName TEXT,
         NormalizedUserName TEXT,
         Email TEXT,
         NormalizedEmail TEXT,
-        PasswordHash TEXT
+        PasswordHash TEXT,
+        ConcurrencyStamp TEXT,
+        SecurityStamp TEXT
     );
 
+    -- Playlists: store UserId as TEXT (GUID)
     CREATE TABLE IF NOT EXISTS Playlists (
         Id INTEGER PRIMARY KEY AUTOINCREMENT,
-        UserId INTEGER NOT NULL,
+        UserId TEXT NOT NULL,
         Name TEXT NOT NULL,
         DateCreated TEXT NOT NULL
     );
 
+    -- Songs: Duration as INTEGER
     CREATE TABLE IF NOT EXISTS Songs (
         Id INTEGER PRIMARY KEY AUTOINCREMENT,
         PlaylistId INTEGER NOT NULL,
         Title TEXT NOT NULL,
         Artist TEXT NOT NULL,
-        Duration TEXT NOT NULL,
+        Duration INTEGER NOT NULL,
         DateAdded TEXT NOT NULL
     );
 
@@ -110,6 +113,20 @@ app.UseRouting();
 
 app.UseAuthentication();   // IMPORTANT
 app.UseAuthorization();
+
+// Root: send authenticated users to Playlists, otherwise to Login
+app.MapGet("/", async context =>
+{
+    if (context.User?.Identity?.IsAuthenticated == true)
+    {
+        context.Response.Redirect("/Playlists/Index");
+    }
+    else
+    {
+        context.Response.Redirect("/Account/Login");
+    }
+    await Task.CompletedTask;
+});
 
 app.MapRazorPages();
 

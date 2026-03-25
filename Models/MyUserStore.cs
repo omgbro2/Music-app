@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.Sqlite;
 using WebApplication2.Models;
+using System.Security.Claims;
 
 namespace WebApplication2
 {
