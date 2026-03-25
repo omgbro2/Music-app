@@ -13,15 +13,19 @@
 
     <img src="/images/default-user.png" style="width:100px; border-radius:50%; margin-right:20px;" />
 
-   <div class="flex-grow-1">
-        <h2 class="fw-bold">@user?.UserName</h2>
-        <p>Hello 👋</p>
+ <div class="flex-grow-1">
+    <h2 class="fw-bold">@Model.UsernameData.DisplayName</h2>
+    <p>Hello 👋</p>
 
-        @* Rādām datus no Modeļa, nevis pa tiešo no UserManager *@
-        <p><b>About:</b> @Model.UsernameData.AboutMe</p>
+    @* Šeit mēs rādām to, kas ir ielādēts OnGetAsync *@
+    <p><b>About:</b> @Model.UsernameData.AboutMe</p>
     
-        <p class="text-muted">Account created: @user?.DateCreated.ToString("dd/MM/yyyy")</p>
-    </div>
+    @{
+        var curUser = await UserManager.GetUserAsync(User);
+    }
+    <p class="text-muted">Account created: @curUser?.DateCreated.ToString("dd/MM/yyyy")</p>
+</div>
+
 
     <form method="post" class="ms-4">
         <div class="mb-2">
