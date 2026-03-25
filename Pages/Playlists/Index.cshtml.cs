@@ -115,20 +115,25 @@ namespace WebApplication2.Pages.Playlists
         }
 
         // --- NEW: UPDATE SONG INFO ---
-        public async Task<IActionResult> OnPostUpdateSongAsync(int songId, int playlistId, string updatedTitle, string updatedArtist)
+        public async Task<IActionResult> OnPostUpdateSongAsync(
+        int songId,
+        int playlistId,
+        string updatedTitle,
+        string updatedArtist,
+        int updatedMinutes,  // <--- Must match name="updatedMinutes"
+        int updatedSeconds)  // <--- Must match name="updatedSeconds"
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (!string.IsNullOrWhiteSpace(updatedTitle))
-            {
-                // This calls the repository to save changes. 
-                // Ensure your PlaylistRepository has an 'UpdateSongAsync' method.
-                await _playlistRepository.UpdateSongAsync(songId, updatedTitle, updatedArtist, userId);
-            }
+            // CRITICAL: Calculate the total seconds here!
+            int totalSeconds = (updatedMinutes * 60) + updatedSeconds;
 
-            // Refresh the page on the current playlist
+            // Pass the NEW totalSeconds variable to the repository
+            await _playlistRepository.UpdateSongAsync(songId, updatedTitle, updatedArtist, totalSeconds, userId);
+
             return RedirectToPage(new { id = playlistId });
         }
+
 
     }
 }
