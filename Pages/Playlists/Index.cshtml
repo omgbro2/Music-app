@@ -106,7 +106,9 @@
                                     <td>@song.Title</td>
                                     <td>@song.Artist</td>
                                     <td>@song.DateAdded</td>
-                                    <td>@song.Duration</td>
+                                    <td>
+                                        @String.Format("{0}:{1:D2}", song.Duration / 60, song.Duration % 60)
+                                    </td>
                                     <td class="text-end">
                                         <form method="post" asp-page-handler="DeleteSong" style="display:inline">
                                             <input type="hidden" name="songId" value="@song.Id" />
