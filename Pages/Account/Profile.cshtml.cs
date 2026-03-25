@@ -24,7 +24,7 @@ namespace WebApplication2.Pages.Account
         {
             [Required]
             public string DisplayName { get; set; } = string.Empty;
-            public string AboutMe { get; set; } = string.Empty;
+            //public string AboutMe { get; set; } = string.Empty;
         }
 
         public async Task OnGetAsync()
@@ -33,7 +33,7 @@ namespace WebApplication2.Pages.Account
             if (user != null)
             {
                 UsernameData.DisplayName = user.UserName ?? "";
-                UsernameData.AboutMe = user.AboutMe ?? "";
+                //UsernameData.AboutMe = user.AboutMe ?? "";
             }
         }
 
@@ -45,7 +45,7 @@ namespace WebApplication2.Pages.Account
             // PIEŠĶIRAM VĒRTĪBAS MANUĀLI
             user.UserName = UsernameData.DisplayName;
             user.DisplayName = UsernameData.DisplayName;
-            user.AboutMe = UsernameData.AboutMe;
+            //user.AboutMe = UsernameData.AboutMe;
 
             // NOŅEMAM VALIDĀCIJAS KĻŪDAS (lai nekas nebloķētu)
             ModelState.Clear();

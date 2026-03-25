@@ -17,8 +17,8 @@
     <h2 class="fw-bold">@Model.UsernameData.DisplayName</h2>
     <p>Hello 👋</p>
 
-    @* Šeit mēs rādām to, kas ir ielādēts OnGetAsync *@
-    <p><b>About:</b> @Model.UsernameData.AboutMe</p>
+     
+    @* <p><b>About:</b> @Model.UsernameData.AboutMe</p> *@
     
     @{
         var curUser = await UserManager.GetUserAsync(User);
@@ -34,8 +34,8 @@
         </div>
         <div class="mb-2">
             <label>About Me</label>
-            @* Ensure this matches the property in your UserInput class *@
-            <textarea asp-for="UsernameData.AboutMe" class="form-control bg-dark text-white"></textarea>
+          
+            @*<textarea asp-for="UsernameData.AboutMe" class="form-control bg-dark text-white"></textarea>*@
         </div>
 
         <button type="submit" class="btn btn-primary w-100 mt-2">Update Profile</button>
