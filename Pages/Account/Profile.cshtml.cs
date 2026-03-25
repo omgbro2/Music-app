@@ -34,9 +34,10 @@ namespace WebApplication2.Pages.Account
             if (user != null)
             {
                 UsernameData.DisplayName = user.UserName;
-                UsernameData.AboutMe = user.AboutMe;
+                UsernameData.AboutMe = user.AboutMe ?? "No info provided.";
             }
         }
+
 
         public async Task<IActionResult> OnPostAsync()
         {

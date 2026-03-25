@@ -32,8 +32,10 @@
         </div>
         <div class="mb-2">
             <label>About Me</label>
+            @* Ensure this matches the property in your UserInput class *@
             <textarea asp-for="UsernameData.AboutMe" class="form-control bg-dark text-white"></textarea>
         </div>
+
         <button type="submit" class="btn btn-primary w-100 mt-2">Update Profile</button>
     </form>
 </div>
