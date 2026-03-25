@@ -271,6 +271,5 @@ namespace WebApplication2.Models
 
             await command.ExecuteNonQueryAsync();
         }
-
     }
 }
