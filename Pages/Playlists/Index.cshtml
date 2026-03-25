@@ -51,7 +51,8 @@
                 <div class="d-flex align-items-center mb-4">
                     <div class="p-4 bg-purple rounded me-4" style="background: #a855f7; font-size: 2rem;">🎵</div>
                     <div>
-                        <h1 class="display-5 fw-bold">@Model.CurrentPlaylist.Name <small>📝</small></h1>
+                        @* <a asp-page="/Playlists/Edit" asp-route-id="@playlist.Id" class="btn btn-warning btn-sm">Edit</a> *@
+                        <h1 class="display-5 fw-bold">@Model.CurrentPlaylist.Name <a href="/Playlists/Edit/@Model.CurrentPlaylist.Id"><small>📝</small></a></h1>
                         <p class="text-muted">@((Model.CurrentPlaylist.Songs?.Count) ?? 0) elements • Created: @DateTime.Now.ToShortDateString()</p>
                     </div>
                 </div>
