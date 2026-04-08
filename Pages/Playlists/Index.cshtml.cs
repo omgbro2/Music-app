@@ -1,8 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using WebApplication2.Models;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+using WebApplication2.Models;
 
 namespace WebApplication2.Pages.Playlists
 {
@@ -51,8 +51,7 @@ namespace WebApplication2.Pages.Playlists
 
             // Choose the requested playlist if present, otherwise the first one
             CurrentPlaylist = id.HasValue
-                ? Playlists.FirstOrDefault(p => p.Id == id.Value)
-                : Playlists.FirstOrDefault();
+                ? Playlists.FirstOrDefault(p => p.Id == id.Value) : Playlists.FirstOrDefault();
 
             // set TargetPlaylistId so forms bound to it default to the selected playlist
             TargetPlaylistId = CurrentPlaylist?.Id ?? 0;
@@ -78,15 +77,17 @@ namespace WebApplication2.Pages.Playlists
 
             if (!string.IsNullOrWhiteSpace(SongTitle) && TargetPlaylistId > 0)
             {
-                // Convert minutes/seconds to total seconds (repository stores Duration as int)
-                int totalSeconds = (Minutes * 60) + Seconds;
 
-                // Use repository method that requires userId for ownership checks
-                await _playlistRepository.AddSongAsync(TargetPlaylistId, SongTitle, SongArtist, totalSeconds, userId);
+
+
+
+
+
+                Console.WriteLine(FileUpload.ContentType.ToString());
+                Console.WriteLine(FileUpload.GetType());
+
+               await _playlistRepository.AddSongAsync(TargetPlaylistId, SongTitle, SongArtist, 420, userId);//TO DO add duration reading to audio file
             }
-
-
-
 
             // stay on the same page and show the playlist that was acted on
             return RedirectToPage(new { id = TargetPlaylistId });

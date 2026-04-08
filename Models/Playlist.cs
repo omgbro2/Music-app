@@ -7,6 +7,7 @@ namespace WebApplication2.Models
     {
         public int Id { get; set; }            // Playlist ID
         public string Name { get; set; }       // Playlist Name
+        public int Duration { get; set; }       //Songs duration
         public string DateCreated { get; set; } // Optional
         public string UserId { get; set; }      // Optional
 

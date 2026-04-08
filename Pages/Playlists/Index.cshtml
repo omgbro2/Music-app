@@ -85,7 +85,7 @@
                             <input asp-for="SongArtist" class="form-control bg-secondary text-white border-0" placeholder="Artist" required />
                         </div>
                         <div class="row g-2 mb-3">
-                            <input type="file" asp-for="FileUpload" id="file" name="file" /><!-- file upload -->
+                            <input type="file" asp-for="FileUpload" id="file" accept="audio/*" /><!-- file upload -->
                         </div>
                         <button type="submit" class="btn btn-primary w-100 rounded-pill" style="background: #a855f7; border: 0;">Add</button>
                     </form>
@@ -124,15 +124,17 @@
                                             <input name="updatedArtist" value="@song.Artist" 
                                                    class="form-control form-control-sm bg-dark text-white border-0" />
                                         </td>
-                                    <td>@song.DateAdded.ToShortDateString()</td>@*TO DO make this display correct added time not just today *@
+                                    <td>@song.DateAdded.ToShortDateString()</td>
                                         
                                         <td>
                                             <div class="d-flex gap-1">
-                                                <input name="updatedMinutes" value="@(song.Duration / 60)" 
-                                                       type="number" class="form-control form-control-sm bg-dark text-white border-0" style="width: 50px;" />
+
+                                                @(song.Duration / 60)
+
                                                 <span class="text-muted">:</span>
-                                                <input name="updatedSeconds" value="@(song.Duration % 60)" 
-                                                       type="number" class="form-control form-control-sm bg-dark text-white border-0" style="width: 50px;" />
+
+                                                @((song.Duration % 60).ToString("D2"))
+
                                             </div>
                                         </td>
 
