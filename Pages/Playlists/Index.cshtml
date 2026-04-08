@@ -73,7 +73,7 @@
                 <!-- ADD SONG FORM (Kā tavā zīmējumā) -->
                 <div class="card bg-dark text-white p-4 mb-4 shadow" style="max-width: 500px; border-radius: 15px;">
                     <h5 class="mb-3">ADD NEW SONG</h5>
-                    <form method="post" asp-page-handler="AddSong">
+                    <form method="post" asp-page-handler="AddSong" enctype="multipart/form-data">
                         <input type="hidden" asp-for="TargetPlaylistId" value="@Model.CurrentPlaylist.Id" />
 
                         <div class="mb-2">
@@ -85,13 +85,7 @@
                             <input asp-for="SongArtist" class="form-control bg-secondary text-white border-0" placeholder="Artist" required />
                         </div>
                         <div class="row g-2 mb-3">
-                            <div class="col">
-                                <label class="small text-muted">Duration</label>
-                                <div class="d-flex gap-2">
-                                    <input asp-for="Minutes" class="form-control bg-secondary text-white border-0" placeholder="Min" type="number" />
-                                    <input asp-for="Seconds" class="form-control bg-secondary text-white border-0" placeholder="Sec" type="number" />
-                                </div>
-                            </div>
+                            <input type="file" asp-for="FileUpload" id="file" name="file" /><!-- file upload -->
                         </div>
                         <button type="submit" class="btn btn-primary w-100 rounded-pill" style="background: #a855f7; border: 0;">Add</button>
                     </form>
@@ -130,7 +124,7 @@
                                             <input name="updatedArtist" value="@song.Artist" 
                                                    class="form-control form-control-sm bg-dark text-white border-0" />
                                         </td>
-                                        <td>@song.@DateTime.Now.ToShortDateString()</td>
+                                    <td>@song.DateAdded.ToShortDateString()</td>@*TO DO make this display correct added time not just today *@
                                         
                                         <td>
                                             <div class="d-flex gap-1">

@@ -3,10 +3,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebApplication2.Models;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
 
 namespace WebApplication2.Pages.Playlists
 {
@@ -20,16 +16,16 @@ namespace WebApplication2.Pages.Playlists
             _playlistRepository = playlistRepository;
         }
 
-        // --- PROPERTIES ---
+        [BindProperty]
+        public IFormFile FileUpload { get; set; }
+
         public List<Playlist> Playlists { get; set; } = new();
 
-        // Selected playlist shown on the right
         public Playlist CurrentPlaylist { get; set; }
 
         [BindProperty]
         public string PlaylistName { get; set; }
 
-        // Ðie lauki ir nepiecieðami dziesmu pievienoðanai (lai nebûtu kïûdu CS1061)
         [BindProperty]
         public int TargetPlaylistId { get; set; }
 
@@ -45,13 +41,12 @@ namespace WebApplication2.Pages.Playlists
         [BindProperty]
         public int Seconds { get; set; }
 
-        // --- HANDLERS ---
 
         // IELÂDÇT PLAYLISTES
         // Accept optional id to select a playlist when user clicks on the left side
         public async Task OnGetAsync(int? id)
         {
-            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));//TO DO fix this for better 
             Playlists = await _playlistRepository.GetPlaylistsByUserAsync(userId);
 
             // Choose the requested playlist if present, otherwise the first one
@@ -90,9 +85,22 @@ namespace WebApplication2.Pages.Playlists
                 await _playlistRepository.AddSongAsync(TargetPlaylistId, SongTitle, SongArtist, totalSeconds, userId);
             }
 
+
+
+
             // stay on the same page and show the playlist that was acted on
             return RedirectToPage(new { id = TargetPlaylistId });
         }
+
+
+
+
+
+
+
+
+
+
 
         // DELETE A SONG
         public async Task<IActionResult> OnPostDeleteSongAsync(int songId, int playlistId)

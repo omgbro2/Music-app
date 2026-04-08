@@ -192,7 +192,7 @@ namespace WebApplication2.Models
                     Title = reader.GetString(1),
                     Artist = reader.GetString(2),
                     Duration = reader.GetInt32(3),
-                    DateAdded = reader.GetString(4)
+                    DateAdded = reader.GetDateTime(4)
                 });
             }
 
@@ -229,6 +229,7 @@ namespace WebApplication2.Models
             command.Parameters.AddWithValue("$date", DateTime.UtcNow.ToString("o"));
 
             await command.ExecuteNonQueryAsync();
+            await connection.CloseAsync();
         }
 
         // Delete a single song but only if it belongs to a playlist owned by the user

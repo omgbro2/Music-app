@@ -1,7 +1,4 @@
 ﻿using Microsoft.Data.Sqlite;
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
 
 namespace WebApplication2.Models
 {
@@ -58,7 +55,7 @@ namespace WebApplication2.Models
                     Title = reader.GetString(1),
                     Artist = reader.GetString(2),
                     Duration = reader.GetInt32(3),
-                    DateAdded = reader.GetString(4)
+                    DateAdded = reader.GetDateTime(4)
                 });
             }
 

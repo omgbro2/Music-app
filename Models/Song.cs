@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-
+﻿
 namespace WebApplication2.Models
 {
     public class Song
@@ -10,7 +9,7 @@ namespace WebApplication2.Models
         public string Title { get; set; }
         public string Artist { get; set; }
 
-        public int Duration { get; set; }        // <- integer now
-        public string DateAdded { get; set; }
+        public int Duration { get; set; }
+        public DateTime DateAdded { get; set; }
     }
 }
