@@ -77,16 +77,20 @@ namespace WebApplication2.Pages.Playlists
 
             if (!string.IsNullOrWhiteSpace(SongTitle) && TargetPlaylistId > 0)
             {
+                var fileBuffer = new byte[FileUpload.Length];//TO DO add file limit
+                //TO DO handle WAV files also
+                //TO DO restrict audio only
+                var file = FileUpload.OpenReadStream().Read(fileBuffer, 0, (int)FileUpload.Length);
+
+                var readResult = TagLibSharp2.Mpeg.Mp3File.Read(fileBuffer.AsSpan());
 
 
 
 
+                //TO DO save as BLOB in databaser
 
 
-                Console.WriteLine(FileUpload.ContentType.ToString());
-                Console.WriteLine(FileUpload.GetType());
-
-               await _playlistRepository.AddSongAsync(TargetPlaylistId, SongTitle, SongArtist, 420, userId);//TO DO add duration reading to audio file
+               await _playlistRepository.AddSongAsync(TargetPlaylistId, SongTitle, SongArtist, (int)Math.Round(readResult.File.Duration.Value.TotalSeconds), userId);
             }
 
             // stay on the same page and show the playlist that was acted on
