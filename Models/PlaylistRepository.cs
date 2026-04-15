@@ -1,8 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Security.Claims;
+
 
 namespace WebApplication2.Models
 {
@@ -31,7 +28,7 @@ namespace WebApplication2.Models
                     PlaylistId INTEGER NOT NULL,
                     Title TEXT NOT NULL,
                     Artist TEXT NOT NULL,
-                    Duration INTEGER NOT NULL,
+                    Duration BLOB NOT NULL,
                     DateAdded TEXT NOT NULL
                 );";
             command.ExecuteNonQuery();

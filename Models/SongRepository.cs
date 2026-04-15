@@ -11,7 +11,7 @@ namespace WebApplication2.Models
             _connectionString = connectionString;
         }
 
-        public void AddSong(int playlistId, string title, string artist, string duration)
+        public void AddSong(int playlistId, string title, string artist, string duration)//TO DO change from void to Async (//Check if we even need this file)
         {
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
