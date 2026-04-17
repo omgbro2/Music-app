@@ -93,9 +93,7 @@ namespace WebApplication2.Pages.Playlists
                         var readResult = TagLibSharp2.Mpeg.Mp3File.Read(fileBuffer.AsSpan());
 
 
-                        var first = FileUpload.OpenReadStream();
-
-                        await _playlistRepository.AddSongAsync(TargetPlaylistId, SongTitle, SongArtist, (int)Math.Round(readResult.File.Duration.Value.TotalSeconds), userId, );
+                        await _playlistRepository.AddSongAsync(TargetPlaylistId, SongTitle, SongArtist, (int)Math.Round(readResult.File.Duration.Value.TotalSeconds), userId, fileBuffer);
                     }
                     else
                     {

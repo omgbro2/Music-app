@@ -200,7 +200,7 @@ namespace WebApplication2.Models
             return songs;
         }
 
-        public async Task AddSongAsync(int playlistId, string title, string artist, int duration, Guid userId, AudioProperties audio)
+        public async Task AddSongAsync(int playlistId, string title, string artist, int duration, Guid userId, byte[] audio)
         {
             using var connection = new SqliteConnection(_connectionString);
             await connection.OpenAsync();
