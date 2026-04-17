@@ -9,5 +9,6 @@ namespace WebApplication2.Models
         public string Artist { get; set; }
         public int Duration { get; set; }
         public DateTime DateAdded { get; set; }
+        public string ContentType { get; set; }
     }
 }

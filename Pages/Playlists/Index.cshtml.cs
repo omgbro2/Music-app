@@ -77,6 +77,12 @@ namespace WebApplication2.Pages.Playlists
             return RedirectToPage();
         }
 
+        public async Task<IActionResult> OnGetSongAsync(int SongId)
+        {
+            var (filedata, contentType) = await _playlistRepository.GetSongData(SongId);
+            return File(filedata, contentType);
+        }
+
         // PIEVIENOT DZIESMU KONKRÇTAI PLAYLISTEI
         public async Task<IActionResult> OnPostAddSongAsync()
         {
@@ -87,14 +93,23 @@ namespace WebApplication2.Pages.Playlists
                 if (FileUpload.Length < 10000000) {
                     bool IsMp3 = FileUpload.ContentType == "audio/mpeg";
                     bool IsWav = FileUpload.ContentType == "audio/wav";
-                    if (IsMp3 || IsWav){
-                        var fileBuffer = new byte[FileUpload.Length];
-                        var file = FileUpload.OpenReadStream().Read(fileBuffer, 0, (int)FileUpload.Length);
+
+                    var fileBuffer = new byte[FileUpload.Length];
+                    var file = FileUpload.OpenReadStream().Read(fileBuffer, 0, (int)FileUpload.Length);
+
+                    if (IsMp3){
                         var readResult = TagLibSharp2.Mpeg.Mp3File.Read(fileBuffer.AsSpan());
 
-
-                        await _playlistRepository.AddSongAsync(TargetPlaylistId, SongTitle, SongArtist, (int)Math.Round(readResult.File.Duration.Value.TotalSeconds), userId, fileBuffer);
+                        await _playlistRepository.AddSongAsync(TargetPlaylistId, SongTitle, SongArtist, (int)Math.Round(readResult.File.Duration.Value.TotalSeconds), userId, fileBuffer, FileUpload.ContentType);
                     }
+
+                    else if (IsWav)
+                    {
+                        var readResult = TagLibSharp2.Riff.WavFile.Read(fileBuffer.AsSpan());
+
+                        await _playlistRepository.AddSongAsync(TargetPlaylistId, SongTitle, SongArtist, (int)Math.Round(readResult.File.Properties.Duration.TotalSeconds), userId, fileBuffer, FileUpload.ContentType);
+                    }
+
                     else
                     {
                         return RedirectToPage(new { id = TargetPlaylistId });//TO DO send back an error that file was invalid

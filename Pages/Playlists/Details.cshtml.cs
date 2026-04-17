@@ -64,8 +64,8 @@ namespace WebApplication2.Pages.Playlists
                 PlaylistId = id;
                 return Page();
             }
-
-            await _playlistRepository.AddSongAsync(id, Title, Artist, Duration, userId);
+            throw new NotImplementedException(); // TO DO
+            //await _playlistRepository.AddSongAsync(id, Title, Artist, Duration, userId);
 
             return RedirectToPage(new { id });
         }

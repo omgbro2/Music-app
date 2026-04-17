@@ -49,50 +49,50 @@ builder.Services.AddIdentityCore<User>(options =>
 // CREATE TABLES (Auto Run)
 // --------------------
 
-void CreateTables(string connString)
-{
-    using var connection = new SqliteConnection(connString);
-    connection.Open();
+//void CreateTables(string connString)
+//{
+//    using var connection = new SqliteConnection(connString);
+//    connection.Open();
 
-    var command = connection.CreateCommand();
-    command.CommandText = @"
+//    var command = connection.CreateCommand();
+//    command.CommandText = @"
 
-    -- Users: use TEXT for GUID id (matches MyUserStore)
-    CREATE TABLE IF NOT EXISTS Users (
-        Id TEXT PRIMARY KEY,
-        UserName TEXT,
-        NormalizedUserName TEXT,
-        Email TEXT,
-        NormalizedEmail TEXT,
-        PasswordHash TEXT,
-        ConcurrencyStamp TEXT,
-        SecurityStamp TEXT
-    );
+//    -- Users: use TEXT for GUID id (matches MyUserStore)
+//    CREATE TABLE IF NOT EXISTS Users (
+//        Id TEXT PRIMARY KEY,
+//        UserName TEXT,
+//        NormalizedUserName TEXT,
+//        Email TEXT,
+//        NormalizedEmail TEXT,
+//        PasswordHash TEXT,
+//        ConcurrencyStamp TEXT,
+//        SecurityStamp TEXT
+//    );
 
-    -- Playlists: store UserId as TEXT (GUID)
-    CREATE TABLE IF NOT EXISTS Playlists (
-        Id INTEGER PRIMARY KEY AUTOINCREMENT,
-        UserId TEXT NOT NULL,
-        Name TEXT NOT NULL,
-        DateCreated TEXT NOT NULL
-    );
+//    -- Playlists: store UserId as TEXT (GUID)
+//    CREATE TABLE IF NOT EXISTS Playlists (
+//        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+//        UserId TEXT NOT NULL,
+//        Name TEXT NOT NULL,
+//        DateCreated TEXT NOT NULL
+//    );
 
-    -- Songs: Duration as INTEGER
-    CREATE TABLE IF NOT EXISTS Songs (
-        Id INTEGER PRIMARY KEY AUTOINCREMENT,
-        PlaylistId INTEGER NOT NULL,
-        Title TEXT NOT NULL,
-        Artist TEXT NOT NULL,
-        Duration INTEGER NOT NULL,
-        DateAdded TEXT NOT NULL
-    );
+//    -- Songs: Duration as INTEGER
+//    CREATE TABLE IF NOT EXISTS Songs (
+//        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+//        PlaylistId INTEGER NOT NULL,
+//        Title TEXT NOT NULL,
+//        Artist TEXT NOT NULL,
+//        Duration INTEGER NOT NULL,
+//        DateAdded TEXT NOT NULL
+//    );
 
-    ";
+//    ";
 
-    command.ExecuteNonQuery();
-}
+//    command.ExecuteNonQuery();
+//}
 
-CreateTables(connectionString);
+//CreateTables(connectionString);
 
 // --------------------
 // Build App

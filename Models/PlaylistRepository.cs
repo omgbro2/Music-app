@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using TagLibSharp2.Core;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 
 namespace WebApplication2.Models
@@ -31,7 +32,8 @@ namespace WebApplication2.Models
                     Artist TEXT NOT NULL,
                     Duration BLOB NOT NULL,
                     DateAdded TEXT NOT NULL,
-                    Audio BLOB NOT NULL
+                    Audio BLOB NOT NULL,
+                    ContentType TEXT NOT NULL
                 );";
             command.ExecuteNonQuery();
         }
@@ -200,7 +202,7 @@ namespace WebApplication2.Models
             return songs;
         }
 
-        public async Task AddSongAsync(int playlistId, string title, string artist, int duration, Guid userId, byte[] audio)
+        public async Task AddSongAsync(int playlistId, string title, string artist, int duration, Guid userId, byte[] audio, string ContentType)
         {
             using var connection = new SqliteConnection(_connectionString);
             await connection.OpenAsync();
@@ -220,8 +222,8 @@ namespace WebApplication2.Models
 
             var command = connection.CreateCommand();
             command.CommandText = @"
-                INSERT INTO Songs (PlaylistId, Title, Artist, Duration, DateAdded, Audio)
-                VALUES ($playlistId, $title, $artist, $duration, $date, $audio)";
+                INSERT INTO Songs (PlaylistId, Title, Artist, Duration, DateAdded, Audio, ContentType)
+                VALUES ($playlistId, $title, $artist, $duration, $date, $audio, $contenttype)";
 
             command.Parameters.AddWithValue("$playlistId", playlistId);
             command.Parameters.AddWithValue("$title", title);
@@ -229,6 +231,7 @@ namespace WebApplication2.Models
             command.Parameters.AddWithValue("$duration", duration);
             command.Parameters.AddWithValue("$date", DateTime.UtcNow.ToString("o"));
             command.Parameters.AddWithValue("$audio", audio);
+            command.Parameters.AddWithValue("$contenttype", ContentType);
 
             await command.ExecuteNonQueryAsync();
             await connection.CloseAsync();
@@ -277,6 +280,27 @@ namespace WebApplication2.Models
 
             await command.ExecuteNonQueryAsync();
             await connection.CloseAsync();
+        }
+        public async Task<(byte[], string)> GetSongData(int SongID)//TO DO fix reading song blob
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            await connection.OpenAsync();
+
+            var checkCmd = connection.CreateCommand();
+            checkCmd.CommandText = @"
+                SELECT Audio, ContentType
+                FROM Songs
+                WHERE Id = $songId";
+            checkCmd.Parameters.AddWithValue("$songId", SongID);
+            using SqliteDataReader reader = await checkCmd.ExecuteReaderAsync();
+            Console.WriteLine(SongID);
+            var stream = reader.GetStream(0);
+            var blob = new byte[stream.Length];
+            stream.Read(blob.AsSpan());
+            
+            return (blob, reader.GetString(1));
+
+            //throw new NotImplementedException();
         }
 
     }
