@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
+using TagLibSharp2.Core;
 
 
 namespace WebApplication2.Models
@@ -29,7 +30,8 @@ namespace WebApplication2.Models
                     Title TEXT NOT NULL,
                     Artist TEXT NOT NULL,
                     Duration BLOB NOT NULL,
-                    DateAdded TEXT NOT NULL
+                    DateAdded TEXT NOT NULL,
+                    Audio BLOB NOT NULL
                 );";
             command.ExecuteNonQuery();
         }
@@ -134,6 +136,7 @@ namespace WebApplication2.Models
             command.Parameters.AddWithValue("$userId", userId.ToString());
 
             await command.ExecuteNonQueryAsync();
+            await connection.CloseAsync();
         }
 
         // DELETE (safe)
@@ -160,6 +163,7 @@ namespace WebApplication2.Models
             cmd2.Parameters.AddWithValue("$userId", userId.ToString());
 
             await cmd2.ExecuteNonQueryAsync();
+            await connection.CloseAsync();
         }
 
         // SONGS (safe via playlist ownership)
@@ -192,11 +196,11 @@ namespace WebApplication2.Models
                     DateAdded = reader.GetDateTime(4)
                 });
             }
-
+            await connection.CloseAsync();
             return songs;
         }
 
-        public async Task AddSongAsync(int playlistId, string title, string artist, int duration, Guid userId)
+        public async Task AddSongAsync(int playlistId, string title, string artist, int duration, Guid userId, AudioProperties audio)
         {
             using var connection = new SqliteConnection(_connectionString);
             await connection.OpenAsync();
@@ -216,14 +220,15 @@ namespace WebApplication2.Models
 
             var command = connection.CreateCommand();
             command.CommandText = @"
-                INSERT INTO Songs (PlaylistId, Title, Artist, Duration, DateAdded)
-                VALUES ($playlistId, $title, $artist, $duration, $date)";
+                INSERT INTO Songs (PlaylistId, Title, Artist, Duration, DateAdded, Audio)
+                VALUES ($playlistId, $title, $artist, $duration, $date, $audio)";
 
             command.Parameters.AddWithValue("$playlistId", playlistId);
             command.Parameters.AddWithValue("$title", title);
             command.Parameters.AddWithValue("$artist", artist);
             command.Parameters.AddWithValue("$duration", duration);
             command.Parameters.AddWithValue("$date", DateTime.UtcNow.ToString("o"));
+            command.Parameters.AddWithValue("$audio", audio);
 
             await command.ExecuteNonQueryAsync();
             await connection.CloseAsync();
@@ -247,21 +252,22 @@ namespace WebApplication2.Models
             command.Parameters.AddWithValue("$userId", userId.ToString());
 
             await command.ExecuteNonQueryAsync();
+            await connection.CloseAsync();
         }
-        public async Task UpdateSongAsync(int songId, string title, string artist, int duration, Guid userId)
+        public async Task UpdateSongAsync(int songId, string title, string artist, int duration, Guid userId)//TO DO double check this function if it works
         {
             using var connection = new SqliteConnection(_connectionString);
             await connection.OpenAsync();
 
             var command = connection.CreateCommand();
             command.CommandText = @"
-        UPDATE Songs
-        SET Title = $title, 
+            UPDATE Songs
+            SET Title = $title, 
             Artist = $artist, 
             Duration = $duration   -- <--- DID YOU ADD THIS LINE?
-        WHERE Id = $id AND PlaylistId IN (
+            WHERE Id = $id AND PlaylistId IN (
             SELECT Id FROM Playlists WHERE UserId = $userId
-        )";
+            )";
 
             command.Parameters.AddWithValue("$title", title);
             command.Parameters.AddWithValue("$artist", artist);
@@ -270,6 +276,7 @@ namespace WebApplication2.Models
             command.Parameters.AddWithValue("$userId", userId.ToString());
 
             await command.ExecuteNonQueryAsync();
+            await connection.CloseAsync();
         }
 
     }

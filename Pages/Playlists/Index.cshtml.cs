@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net.Mime;
@@ -83,7 +84,7 @@ namespace WebApplication2.Pages.Playlists
 
             if (!string.IsNullOrWhiteSpace(SongTitle) && TargetPlaylistId > 0)
             {
-                if (FileUpload.Length < 10000000 && FileUpload.Length > 0) {
+                if (FileUpload.Length < 10000000) {
                     bool IsMp3 = FileUpload.ContentType == "audio/mpeg";
                     bool IsWav = FileUpload.ContentType == "audio/wav";
                     if (IsMp3 || IsWav){
@@ -91,17 +92,21 @@ namespace WebApplication2.Pages.Playlists
                         var file = FileUpload.OpenReadStream().Read(fileBuffer, 0, (int)FileUpload.Length);
                         var readResult = TagLibSharp2.Mpeg.Mp3File.Read(fileBuffer.AsSpan());
 
-                        //TO DO save as BLOB in database
-                        await _playlistRepository.AddSongAsync(TargetPlaylistId, SongTitle, SongArtist, (int)Math.Round(readResult.File.Duration.Value.TotalSeconds), userId);
+
+                        var first = FileUpload.OpenReadStream();
+
+                        await _playlistRepository.AddSongAsync(TargetPlaylistId, SongTitle, SongArtist, (int)Math.Round(readResult.File.Duration.Value.TotalSeconds), userId, );
+                    }
+                    else
+                    {
+                        return RedirectToPage(new { id = TargetPlaylistId });//TO DO send back an error that file was invalid
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Invalid file");//TO DO why this didnt run??? find out
                     return RedirectToPage(new { id = TargetPlaylistId });//TO DO send back an error that file was invalid
                 }
             }
-
             // stay on the same page and show the playlist that was acted on
             return RedirectToPage(new { id = TargetPlaylistId });
         }
