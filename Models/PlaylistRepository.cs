@@ -293,15 +293,11 @@ namespace WebApplication2.Models
                 WHERE Id = $songId";
             checkCmd.Parameters.AddWithValue("$songId", SongID);
             using SqliteDataReader reader = await checkCmd.ExecuteReaderAsync();
+            await reader.ReadAsync();
             Console.WriteLine(SongID);
-            var stream = reader.GetStream(0);
-            var blob = new byte[stream.Length];
-            stream.Read(blob.AsSpan());
-            
+            byte[] blob = (byte[])reader[0];
+            Console.WriteLine(blob.Length);
             return (blob, reader.GetString(1));
-
-            //throw new NotImplementedException();
         }
-
     }
 }

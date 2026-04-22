@@ -80,7 +80,9 @@ namespace WebApplication2.Pages.Playlists
         public async Task<IActionResult> OnGetSongAsync(int SongId)
         {
             var (filedata, contentType) = await _playlistRepository.GetSongData(SongId);
-            return File(filedata, contentType);
+            Response.Headers.AcceptRanges = "bytes";
+            Response.Headers.Connection = "keep-alive";
+            return new FileStreamResult(new MemoryStream(filedata), contentType);
         }
 
         // PIEVIENOT DZIESMU KONKRÇTAI PLAYLISTEI
