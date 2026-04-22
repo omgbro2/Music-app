@@ -294,9 +294,7 @@ namespace WebApplication2.Models
             checkCmd.Parameters.AddWithValue("$songId", SongID);
             using SqliteDataReader reader = await checkCmd.ExecuteReaderAsync();
             await reader.ReadAsync();
-            Console.WriteLine(SongID);
             byte[] blob = (byte[])reader[0];
-            Console.WriteLine(blob.Length);
             return (blob, reader.GetString(1));
         }
     }

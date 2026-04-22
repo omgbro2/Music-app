@@ -99,7 +99,7 @@
                             <th>Title</th>
                             <th>Artist</th>
                             <th>Date added</th>
-                            <th>Duration</th>
+                            <th>Song</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -129,11 +129,9 @@
                                         <td>
                                             <div class="d-flex gap-1">
 
-                                                @(song.Duration / 60)
-
-                                                <span class="text-muted">:</span>
-
-                                                @((song.Duration % 60).ToString("D2"))
+                                                <audio controls>
+                                                    <source src="?handler=Song&SongId=@song.Id" />
+                                                </audio>
 
                                             </div>
                                         </td>
@@ -148,12 +146,6 @@
                                                     onclick="return confirm('Delete?');">🗑️</button>
                                         </td>
                                     </form>
-                                    <td>
-                                        <audio controls>
-                                            <source src="?handler=Song&SongId=@song.Id"/>
-                                        </audio>
-                                    </td>
-
                                 </tr>
                                 counter++;
                             }
