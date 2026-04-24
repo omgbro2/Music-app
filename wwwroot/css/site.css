@@ -13,6 +13,28 @@ html, body {
     overflow-x: auto; /* horizontal scroll if needed */
 }
 
+.left-table-container {
+    max-height: 100vh; /* or whatever height you want */
+    overflow-y: auto; /* vertical scroll */
+    overflow-x: auto; /* horizontal scroll if needed */
+}
+
+.body-container {
+    height: 100vh;
+    width: 100vw;
+}
+
+.app-bg {
+    height: 100vh;
+    width: 100vw;
+}
+
+.playlist-scroll {
+    max-height: 60vh; /* adjust if needed */
+    overflow-y: auto;
+    padding-right: 5px; /* prevents scrollbar overlap */
+}
+
     /* GLOBAL APP BACKGROUND (used after login) */
 
 .dropdown-menu {

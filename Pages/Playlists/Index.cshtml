@@ -26,7 +26,7 @@
             </div>
 
             <!-- Playlistu pogas -->
-            <div class="list-group">
+            <div class="list-group playlist-scroll">
                 @foreach (var playlist in Model.Playlists)
                 {
                     <div class="d-flex align-items-center mb-2 bg-dark-subtle rounded-3"
@@ -56,112 +56,112 @@
         </div>
 
         <!-- 🎵 LABĀ PUSE: Aktīvā Playlist (Saturs) -->
-        <div class="col-md-9 p-4">
+            <div class="col-md-9 p-4">
 
-            @* Use the selected playlist provided by the PageModel *@
-            @if (Model.CurrentPlaylist != null)
-            {
-                <div class="d-flex align-items-center mb-4">
-                    <div class="p-4 bg-purple rounded me-4" style="background: #a855f7; font-size: 2rem;">🎵</div>
-                    <div>
-                        @* <a asp-page="/Playlists/Edit" asp-route-id="@playlist.Id" class="btn btn-warning btn-sm">Edit</a> *@
-                        <h1 class="display-5 fw-bold">@Model.CurrentPlaylist.Name <a href="/Playlists/Edit/@Model.CurrentPlaylist.Id"><small>✏</small></a></h1>
-                        <p class="text-muted">@((Model.CurrentPlaylist.Songs?.Count) ?? 0) elements • Created: @DateTime.Now.ToShortDateString()</p>
+                @* Use the selected playlist provided by the PageModel *@
+                @if (Model.CurrentPlaylist != null)
+                {
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="p-4 bg-purple rounded me-4" style="background: #a855f7; font-size: 2rem;">🎵</div>
+                        <div>
+                            @* <a asp-page="/Playlists/Edit" asp-route-id="@playlist.Id" class="btn btn-warning btn-sm">Edit</a> *@
+                            <h1 class="display-5 fw-bold">@Model.CurrentPlaylist.Name <a href="/Playlists/Edit/@Model.CurrentPlaylist.Id"><small>✏</small></a></h1>
+                            <p class="text-muted">@((Model.CurrentPlaylist.Songs?.Count) ?? 0) elements • Created: @DateTime.Now.ToShortDateString()</p>
+                        </div>
                     </div>
-                </div>
 
-                <!-- ADD SONG FORM (Kā tavā zīmējumā) -->
-                <div class="card bg-dark text-white p-4 mb-4 shadow" style="max-width: 500px; border-radius: 15px;">
-                    <h5 class="mb-3">ADD NEW SONG</h5>
-                    <form method="post" asp-page-handler="AddSong" enctype="multipart/form-data">
-                        <input type="hidden" asp-for="TargetPlaylistId" value="@Model.CurrentPlaylist.Id" />
+                    <!-- ADD SONG FORM (Kā tavā zīmējumā) -->
+                    <div class="card bg-dark text-white p-4 mb-4 shadow" style="max-width: 500px; border-radius: 15px;">
+                        <h5 class="mb-3">ADD NEW SONG</h5>
+                        <form method="post" asp-page-handler="AddSong" enctype="multipart/form-data">
+                            <input type="hidden" asp-for="TargetPlaylistId" value="@Model.CurrentPlaylist.Id" />
 
-                        <div class="mb-2">
-                            <label class="small text-muted">Title</label>
-                            <input asp-for="SongTitle" class="form-control bg-secondary text-white border-0" placeholder="Title" required />
-                        </div>
-                        <div class="mb-2">
-                            <label class="small text-muted">Artist</label>
-                            <input asp-for="SongArtist" class="form-control bg-secondary text-white border-0" placeholder="Artist" required />
-                        </div>
-                        <div class="row g-2 mb-3">
-                            <input type="file" asp-for="FileUpload" id="file" accept="audio/mpeg,audio/wav" required /><!-- file upload -->
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 rounded-pill" style="background: #a855f7; border: 0;">Add</button>
-                    </form>
-                </div>
+                            <div class="mb-2">
+                                <label class="small text-muted">Title</label>
+                                <input asp-for="SongTitle" class="form-control bg-secondary text-white border-0" placeholder="Title" required />
+                            </div>
+                            <div class="mb-2">
+                                <label class="small text-muted">Artist</label>
+                                <input asp-for="SongArtist" class="form-control bg-secondary text-white border-0" placeholder="Artist" required />
+                            </div>
+                            <div class="row g-2 mb-3">
+                                <input type="file" asp-for="FileUpload" id="file" accept="audio/mpeg,audio/wav" required /><!-- file upload -->
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 rounded-pill" style="background: #a855f7; border: 0;">Add</button>
+                        </form>
+                    </div>
 
-                <!-- DZIESMU TABULA -->
-                <div class="table-container">
-                    <table class="table table-dark table-hover align-middle">
-                        <thead class="text-muted">
-                            <tr>
-                                <th>#</th>
-                                <th>Title</th>
-                                <th>Artist</th>
-                                <th>Date added</th>
-                                <th>Song</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.CurrentPlaylist.Songs != null && Model.CurrentPlaylist.Songs.Any())
-                            {
-                                int counter = 1;
-                                @foreach (var song in Model.CurrentPlaylist.Songs)
+                    <!-- DZIESMU TABULA -->
+                    <div class="table-container">
+                        <table class="table table-dark table-hover align-middle">
+                            <thead class="text-muted">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Title</th>
+                                    <th>Artist</th>
+                                    <th>Date added</th>
+                                    <th>Song</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.CurrentPlaylist.Songs != null && Model.CurrentPlaylist.Songs.Any())
                                 {
-                                    <tr>
-                                        @* Use a form for each row so we can submit the update *@
-                                        <form method="post" asp-page-handler="UpdateSong">
-                                            <input type="hidden" name="songId" value="@song.Id" />
-                                            <input type="hidden" name="playlistId" value="@Model.CurrentPlaylist.Id" />
+                                    int counter = 1;
+                                    @foreach (var song in Model.CurrentPlaylist.Songs)
+                                    {
+                                        <tr>
+                                            @* Use a form for each row so we can submit the update *@
+                                            <form method="post" asp-page-handler="UpdateSong">
+                                                <input type="hidden" name="songId" value="@song.Id" />
+                                                <input type="hidden" name="playlistId" value="@Model.CurrentPlaylist.Id" />
 
-                                            <td>@counter</td>
-                                            <td>
-                                                <input name="updatedTitle" value="@song.Title" 
-                                                       class="form-control form-control-sm bg-dark text-white border-0" />
-                                            </td>
-                                            <td>
-                                                <input name="updatedArtist" value="@song.Artist" 
-                                                       class="form-control form-control-sm bg-dark text-white border-0" />
-                                            </td>
-                                        <td>@song.DateAdded.ToShortDateString()</td>
+                                                <td>@counter</td>
+                                                <td>
+                                                    <input name="updatedTitle" value="@song.Title" 
+                                                           class="form-control form-control-sm bg-dark text-white border-0" />
+                                                </td>
+                                                <td>
+                                                    <input name="updatedArtist" value="@song.Artist" 
+                                                           class="form-control form-control-sm bg-dark text-white border-0" />
+                                                </td>
+                                            <td>@song.DateAdded.ToShortDateString()</td>
                                         
-                                            <td>
-                                                <div class="d-flex gap-1">
+                                                <td>
+                                                    <div class="d-flex gap-1">
 
-                                                    <audio controls>
-                                                        <source src="?handler=Song&SongId=@song.Id" />
-                                                    </audio>
+                                                        <audio controls>
+                                                            <source src="?handler=Song&SongId=@song.Id" />
+                                                        </audio>
 
-                                                </div>
-                                            </td>
+                                                    </div>
+                                                </td>
 
-                                            <td class="text-end">
-                                                @* Save Button *@
-                                                <button type="submit" class="btn btn-sm btn-link text-success p-0 me-2" title="Save">💾</button>
+                                                <td class="text-end">
+                                                    @* Save Button *@
+                                                    <button type="submit" class="btn btn-sm btn-link text-success p-0 me-2" title="Save">💾</button>
                         
-                                                @* Delete Button (Keep your existing one) *@
-                                                <button type="submit" asp-page-handler="DeleteSong" 
-                                                        class="btn btn-sm btn-link text-danger p-0" 
-                                                        onclick="return confirm('Delete?');">🗑️</button>
-                                            </td>
-                                        </form>
-                                    </tr>
-                                    counter++;
+                                                    @* Delete Button (Keep your existing one) *@
+                                                    <button type="submit" asp-page-handler="DeleteSong" 
+                                                            class="btn btn-sm btn-link text-danger p-0" 
+                                                            onclick="return confirm('Delete?');">🗑️</button>
+                                                </td>
+                                            </form>
+                                        </tr>
+                                        counter++;
+                                    }
                                 }
-                            }
-                        </tbody>
+                            </tbody>
 
-                    </table>
-                </div>
-            }
-            else
-            {
-                <div class="text-center mt-5">
-                    <h3>Select a playlist from the left to view details</h3>
-                </div>
-            }
-        </div>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center mt-5">
+                        <h3>Select a playlist from the left to view details</h3>
+                    </div>
+                }
+            </div>
     </div>
 </div>
