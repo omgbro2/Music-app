@@ -268,7 +268,6 @@ namespace WebApplication2.Models
             await connection.CloseAsync();
         }
 
-        // Delete a single song but only if it belongs to a playlist owned by the user
         public async Task DeleteSongAsync(int songId)
         {
             using var connection = new SqliteConnection(_connectionString);
@@ -349,7 +348,7 @@ namespace WebApplication2.Models
             await command.ExecuteNonQueryAsync();
             await connection.CloseAsync();
         }
-        public async Task<(byte[], string)> GetSongData(int SongID)//TO DO fix reading song blob
+        public async Task<(byte[], string)> GetSongData(int SongID)
         {
             using var connection = new SqliteConnection(_connectionString);
             await connection.OpenAsync();
@@ -378,117 +377,199 @@ namespace WebApplication2.Models
             GetData.Parameters.AddWithValue("$songId", songId);
             var PrevSongId = await GetData.ExecuteScalarAsync();
 
-            var heligop = connection.CreateCommand();
-            heligop.CommandText = @"
-                SELECT NextSong FROM Songs
-                WHERE Id = $songId
-                ";
-            heligop.Parameters.AddWithValue("$songId", songId);
-            var NextSongId = await heligop.ExecuteScalarAsync();
+            if (PrevSongId != DBNull.Value)
+            {
 
-            var lolipop = connection.CreateCommand();
-            lolipop.CommandText = @"
-                SELECT PreviouSong FROM Songs
-                WHERE Id = $songId
-                ";
-            lolipop.Parameters.AddWithValue("$songId", PrevSongId);
-            var PrevSong2Id = await lolipop.ExecuteScalarAsync();
+                var heligop = connection.CreateCommand();
+                heligop.CommandText = @"
+                    SELECT NextSong FROM Songs
+                    WHERE Id = $songId
+                    ";
+                heligop.Parameters.AddWithValue("$songId", songId);
+                var NextSongId = await heligop.ExecuteScalarAsync();
 
-            var sourpop = connection.CreateCommand();
-            sourpop.CommandText = @"
-                SELECT NextSong FROM Songs
-                WHERE Id = $songId
-                ";
-            sourpop.Parameters.AddWithValue("$songId", PrevSongId);
-            var NextSong2Id = await sourpop.ExecuteScalarAsync();
+                var lolipop = connection.CreateCommand();
+                lolipop.CommandText = @"
+                    SELECT PreviouSong FROM Songs
+                    WHERE Id = $songId
+                    ";
+                lolipop.Parameters.AddWithValue("$songId", PrevSongId);
+                var PrevSong2Id = await lolipop.ExecuteScalarAsync();
 
+                var sourpop = connection.CreateCommand();
+                sourpop.CommandText = @"
+                    SELECT NextSong FROM Songs
+                    WHERE Id = $songId
+                    ";
+                sourpop.Parameters.AddWithValue("$songId", PrevSongId);
+                var NextSong2Id = await sourpop.ExecuteScalarAsync();
 
-            var Update = connection.CreateCommand();
-            Update.CommandText = @"
-                UPDATE Songs
-                SET PreviouSong = $prevSong2Id,
-                NextSong = $nextSong2Id
-                WHERE Id = $id
-                ";
-            Update.Parameters.AddWithValue("$id", songId);
-            Update.Parameters.AddWithValue("$prevSong2Id", PrevSong2Id ?? DBNull.Value);
-            Update.Parameters.AddWithValue("$nextSong2Id", PrevSongId);
-            await Update.ExecuteNonQueryAsync();
+                //update the current song
+                var Update = connection.CreateCommand();
+                Update.CommandText = @"
+                    UPDATE Songs
+                    SET PreviouSong = $prevSong2Id,
+                    NextSong = $nextSong2Id
+                    WHERE Id = $id
+                    ";
+                Update.Parameters.AddWithValue("$id", songId);
+                Update.Parameters.AddWithValue("$prevSong2Id", PrevSong2Id ?? DBNull.Value);
+                Update.Parameters.AddWithValue("$nextSong2Id", PrevSongId);
+                await Update.ExecuteNonQueryAsync();
 
-            var UpdateNew = connection.CreateCommand();
-            UpdateNew.CommandText = @"
-                UPDATE Songs
-                SET PreviouSong = $prevSong2Id,
-                NextSong = $nextSong2Id
-                WHERE Id = $id
-                ";
-            UpdateNew.Parameters.AddWithValue("$id", PrevSongId);
-            UpdateNew.Parameters.AddWithValue("$prevSong2Id", NextSong2Id ?? DBNull.Value);
-            UpdateNew.Parameters.AddWithValue("$nextSong2Id", NextSongId);
-            await UpdateNew.ExecuteNonQueryAsync();
+                //updates the down song
+                var UpdateNew = connection.CreateCommand();
+                UpdateNew.CommandText = @"
+                    UPDATE Songs
+                    SET PreviouSong = $prevSong2Id,
+                    NextSong = $nextSong2Id
+                    WHERE Id = $id
+                    ";
+                UpdateNew.Parameters.AddWithValue("$id", PrevSongId);
+                UpdateNew.Parameters.AddWithValue("$prevSong2Id", NextSong2Id ?? DBNull.Value);
+                UpdateNew.Parameters.AddWithValue("$nextSong2Id", NextSongId);
+                await UpdateNew.ExecuteNonQueryAsync();
 
+                //updates up song
+                var UpdateOld = connection.CreateCommand();
+                UpdateOld.CommandText = @"
+                    UPDATE Songs
+                    SET PreviouSong = $prevSong2Id
+                    WHERE Id = $id
+                    ";
+                UpdateOld.Parameters.AddWithValue("$id", NextSongId);
+                UpdateOld.Parameters.AddWithValue("$prevSong2Id", PrevSongId);
+                await UpdateOld.ExecuteNonQueryAsync();
+
+                //updates up up song
+                var UpdateOldOld = connection.CreateCommand();
+                UpdateOldOld.CommandText = @"
+                    UPDATE Songs
+                    SET NextSong = $nextSong2Id
+                    WHERE Id = $id
+                    ";
+                UpdateOldOld.Parameters.AddWithValue("$id", PrevSong2Id);
+                UpdateOldOld.Parameters.AddWithValue("$nextSong2Id", NextSong2Id);
+                await UpdateOldOld.ExecuteNonQueryAsync();
+            }
         }
         public async Task MoveSongDown(int songId)
         {
             using var connection = new SqliteConnection(_connectionString);
             await connection.OpenAsync();
 
-            var GetData = connection.CreateCommand();
-            GetData.CommandText = @"
-                SELECT PreviouSong FROM Songs
-                WHERE Id = $songId
-                ";
-            GetData.Parameters.AddWithValue("$songId", songId);
-            var PrevSongId = await GetData.ExecuteScalarAsync();
-
             var heligop = connection.CreateCommand();
             heligop.CommandText = @"
                 SELECT NextSong FROM Songs
-                WHERE Id = $songId
+                WHERE Id = $songId  
                 ";
             heligop.Parameters.AddWithValue("$songId", songId);
             var NextSongId = await heligop.ExecuteScalarAsync();
 
-            var lolipop = connection.CreateCommand();
-            lolipop.CommandText = @"
-                SELECT PreviouSong FROM Songs
-                WHERE Id = $songId
-                ";
-            lolipop.Parameters.AddWithValue("$songId", NextSongId);
-            var PrevSong2Id = await lolipop.ExecuteScalarAsync();
+            if (NextSongId != DBNull.Value)
+            {
 
-            var sourpop = connection.CreateCommand();
-            sourpop.CommandText = @"
-                SELECT NextSong FROM Songs
-                WHERE Id = $songId
-                ";
-            sourpop.Parameters.AddWithValue("$songId", NextSongId);
-            var NextSong2Id = await sourpop.ExecuteScalarAsync();
+                var GetData = connection.CreateCommand();
+                GetData.CommandText = @"
+                    SELECT PreviouSong FROM Songs
+                    WHERE Id = $songId
+                    ";
+                GetData.Parameters.AddWithValue("$songId", songId);
+                var PrevSongId = await GetData.ExecuteScalarAsync();
 
+                var lolipop = connection.CreateCommand();
+                lolipop.CommandText = @"
+                    SELECT PreviouSong FROM Songs
+                    WHERE Id = $songId
+                    ";
+                lolipop.Parameters.AddWithValue("$songId", NextSongId);
+                var PrevSong2Id = await lolipop.ExecuteScalarAsync();
 
-            var Update = connection.CreateCommand();
-            Update.CommandText = @"
-                UPDATE Songs
-                SET PreviouSong = $prevSong2Id,
-                NextSong = $nextSong2Id
-                WHERE Id = $id
-                ";
-            Update.Parameters.AddWithValue("$id", songId);
-            Update.Parameters.AddWithValue("$prevSong2Id", NextSongId);
-            Update.Parameters.AddWithValue("$nextSong2Id", NextSong2Id ?? DBNull.Value);
-            await Update.ExecuteNonQueryAsync();
+                var sourpop = connection.CreateCommand();
+                sourpop.CommandText = @"
+                    SELECT NextSong FROM Songs
+                    WHERE Id = $songId
+                    ";
+                sourpop.Parameters.AddWithValue("$songId", NextSongId);
+                var NextSong2Id = await sourpop.ExecuteScalarAsync();
 
-            var UpdateNew = connection.CreateCommand();
-            UpdateNew.CommandText = @"
-                UPDATE Songs
-                SET PreviouSong = $prevSong2Id,
-                NextSong = $nextSong2Id
-                WHERE Id = $id
-                ";
-            UpdateNew.Parameters.AddWithValue("$id", NextSongId);
-            UpdateNew.Parameters.AddWithValue("$prevSong2Id", PrevSongId ?? DBNull.Value);
-            UpdateNew.Parameters.AddWithValue("$nextSong2Id", PrevSong2Id);
-            await UpdateNew.ExecuteNonQueryAsync();
+                var pankuka = connection.CreateCommand();
+                pankuka.CommandText = @"
+                    SELECT PreviouSong FROM Songs
+                    WHERE Id = $songId
+                    ";
+                pankuka.Parameters.AddWithValue("$songId", NextSongId);
+                var PrevSong3Id = await pankuka.ExecuteScalarAsync();
+
+                var bunzi = connection.CreateCommand();
+                bunzi.CommandText = @"
+                    SELECT NextSong FROM Songs
+                    WHERE Id = $songId
+                    ";
+                bunzi.Parameters.AddWithValue("$songId", NextSongId);
+                var NextSong3Id = await bunzi.ExecuteScalarAsync();
+
+                //update current song
+                var Update = connection.CreateCommand();
+                Update.CommandText = @"
+                    UPDATE Songs
+                    SET PreviouSong = $prevSong2Id,
+                    NextSong = $nextSong2Id
+                    WHERE Id = $id
+                    ";
+                Update.Parameters.AddWithValue("$id", songId);
+                Update.Parameters.AddWithValue("$prevSong2Id", NextSongId);
+                Update.Parameters.AddWithValue("$nextSong2Id", NextSong2Id ?? DBNull.Value);
+                await Update.ExecuteNonQueryAsync();
+
+                //update down song
+                var UpdateNew = connection.CreateCommand();
+                UpdateNew.CommandText = @"
+                    UPDATE Songs
+                    SET PreviouSong = $prevSong2Id,
+                    NextSong = $nextSong2Id
+                    WHERE Id = $id
+                    ";
+                UpdateNew.Parameters.AddWithValue("$id", NextSongId);
+                UpdateNew.Parameters.AddWithValue("$prevSong2Id", PrevSongId ?? DBNull.Value);
+                UpdateNew.Parameters.AddWithValue("$nextSong2Id", PrevSong2Id);
+                await UpdateNew.ExecuteNonQueryAsync();
+
+                //update down down song
+                var UpdateOld = connection.CreateCommand();
+                UpdateOld.CommandText = @"
+                    UPDATE Songs
+                    SET PreviouSong = $prevSong2Id
+                    WHERE Id = $id
+                    ";
+                UpdateOld.Parameters.AddWithValue("$id", NextSong2Id);
+                UpdateOld.Parameters.AddWithValue("$prevSong2Id", PrevSong2Id);
+                await UpdateOld.ExecuteNonQueryAsync();
+
+                //updates up song
+                var UpdateOldOld = connection.CreateCommand();
+                UpdateOldOld.CommandText = @"
+                    UPDATE Songs
+                    SET NextSong = $nextSong2Id
+                    WHERE Id = $id
+                    ";
+                UpdateOldOld.Parameters.AddWithValue("$id", PrevSongId);
+                UpdateOldOld.Parameters.AddWithValue("$nextSong2Id", NextSongId);
+                await UpdateOldOld.ExecuteNonQueryAsync();
+            }
+        }
+
+        public async Task GetSongList(int PlaylistId)
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            await connection.OpenAsync();
+
+            var getsongs = connection.CreateCommand();
+            getsongs.CommandText = @"
+                    SELECT NextSong FROM Songs
+                    ";
+            getsongs.Parameters.AddWithValue("$songId", PlaylistId);
+            var songs = await getsongs.ExecuteScalarAsync();
         }
     }
 }

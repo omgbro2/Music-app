@@ -108,7 +108,8 @@
                                 @if (Model.CurrentPlaylist.Songs != null && Model.CurrentPlaylist.Songs.Any())
                                 {
                                     int counter = 1;
-                                    @foreach (var song in Model.CurrentPlaylist.Songs)
+                                @*TO DO make the songs show up in order*@
+                                @foreach (var song in Model.CurrentPlaylist.Songs)
                                     {
                                         <tr>
                                             @* Use a form for each row so we can submit the update *@
