@@ -33,7 +33,9 @@ namespace WebApplication2.Models
                     Duration BLOB NOT NULL,
                     DateAdded TEXT NOT NULL,
                     Audio BLOB NOT NULL,
-                    ContentType TEXT NOT NULL
+                    ContentType TEXT NOT NULL,
+                    PreviouSong INTEGER,
+                    NextSong INTEGER
                 );";
             command.ExecuteNonQuery();
         }
@@ -207,34 +209,67 @@ namespace WebApplication2.Models
             using var connection = new SqliteConnection(_connectionString);
             await connection.OpenAsync();
 
-            // Ensure playlist belongs to user
-            var checkCmd = connection.CreateCommand();
-            checkCmd.CommandText = @"
-                SELECT COUNT(*)
-                FROM Playlists
-                WHERE Id = $playlistId AND UserId = $userId";
+            //using (connection.BeginTransaction())
+            //{
 
-            checkCmd.Parameters.AddWithValue("$playlistId", playlistId);
-            checkCmd.Parameters.AddWithValue("$userId", userId.ToString());
+                // Ensure playlist belongs to user
+                var checkCmd = connection.CreateCommand();
+                checkCmd.CommandText = @"
+                    SELECT COUNT(*)
+                    FROM Playlists
+                    WHERE Id = $playlistId AND UserId = $userId
+                    ";
 
-            var exists = (long)await checkCmd.ExecuteScalarAsync();
-            if (exists == 0) return;
+                checkCmd.Parameters.AddWithValue("$playlistId", playlistId);
+                checkCmd.Parameters.AddWithValue("$userId", userId.ToString());
+                var exists = (long)await checkCmd.ExecuteScalarAsync();
+                if (exists == 0) return;
 
-            var command = connection.CreateCommand();
-            command.CommandText = @"
-                INSERT INTO Songs (PlaylistId, Title, Artist, Duration, DateAdded, Audio, ContentType)
-                VALUES ($playlistId, $title, $artist, $duration, $date, $audio, $contenttype)";
+                //find previous song
+                var songfind = connection.CreateCommand();
+                songfind.CommandText = @"
+                SELECT Id FROM Songs
+                WHERE PlaylistId = 1 AND NextSong IS NULL
+                ";
+                var PrevSongId = await songfind.ExecuteScalarAsync();
 
-            command.Parameters.AddWithValue("$playlistId", playlistId);
-            command.Parameters.AddWithValue("$title", title);
-            command.Parameters.AddWithValue("$artist", artist);
-            command.Parameters.AddWithValue("$duration", duration);
-            command.Parameters.AddWithValue("$date", DateTime.UtcNow.ToString("o"));
-            command.Parameters.AddWithValue("$audio", audio);
-            command.Parameters.AddWithValue("$contenttype", ContentType);
+                var command = connection.CreateCommand();
+                command.CommandText = @"
+                    INSERT INTO Songs (PlaylistId, Title, Artist, Duration, DateAdded, Audio, ContentType, PreviouSong)
+                    VALUES ($playlistId, $title, $artist, $duration, $date, $audio, $contenttype, $previousong)
+                    ";
 
-            await command.ExecuteNonQueryAsync();
-            await connection.CloseAsync();
+                command.Parameters.AddWithValue("$playlistId", playlistId);
+                command.Parameters.AddWithValue("$title", title);
+                command.Parameters.AddWithValue("$artist", artist);
+                command.Parameters.AddWithValue("$duration", duration);
+                command.Parameters.AddWithValue("$date", DateTime.UtcNow.ToString("o"));
+                command.Parameters.AddWithValue("$audio", audio);
+                command.Parameters.AddWithValue("$contenttype", ContentType);
+                command.Parameters.AddWithValue("$previousong", PrevSongId ?? 1);// TO DO fix null value insertion
+                await command.ExecuteNonQueryAsync();
+
+                var giogo = connection.CreateCommand();
+                giogo.CommandText = @"
+                    SELECT last_insert_rowid() FROM Songs
+                    ";
+                var NextSong = await songfind.ExecuteScalarAsync();
+
+                var Update = connection.CreateCommand();
+                Update.CommandText = @"
+                    UPDATE Songs
+                    SET NextSong = $nextsong
+                    WHERE Id = $id
+                    ";
+                Update.Parameters.AddWithValue("$nextsong", NextSong);
+                Update.Parameters.AddWithValue("$id", PrevSongId);
+
+
+
+
+                await connection.CloseAsync();
+
+            //}
         }
 
         // Delete a single song but only if it belongs to a playlist owned by the user
