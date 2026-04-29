@@ -138,13 +138,20 @@
                                                 </td>
 
                                                 <td class="text-end">
-                                                    @* Save Button *@
-                                                    <button type="submit" class="btn btn-sm btn-link text-success p-0 me-2" title="Save">💾</button>
-                        
-                                                    @* Delete Button (Keep your existing one) *@
-                                                    <button type="submit" asp-page-handler="DeleteSong" 
-                                                            class="btn btn-sm btn-link text-danger p-0" 
-                                                            onclick="return confirm('Delete?');">🗑️</button>
+                                                    <div class="buttons">
+                                                        <div class="up-down">
+                                                            <button class="btn btn-sm" type="submit">🔼</button>
+                                                            <button class="btn btn-sm" type="submit">🔽</button>
+                                                        </div>
+                                                        <div class="save-trash">
+                                                            <button type="submit" class="btn btn-sm text-success" title="Save">💾</button>
+                                                        
+                                                            <button type="submit" asp-page-handler="DeleteSong" 
+                                                                    class="btn btn-sm text-danger p-0" 
+                                                                    onclick="return confirm('Delete?');">🗑️
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </td>
                                             </form>
                                         </tr>

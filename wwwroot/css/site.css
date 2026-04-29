@@ -7,6 +7,24 @@ html, body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.up-down {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+}
+
+.save-trash {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+}
+
 .table-container {
     max-height: 33.5vh; /* or whatever height you want */
     overflow-y: auto; /* vertical scroll */
