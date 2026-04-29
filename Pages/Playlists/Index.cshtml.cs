@@ -126,23 +126,12 @@ namespace WebApplication2.Pages.Playlists
             return RedirectToPage(new { id = TargetPlaylistId });
         }
 
-
-
-
-
-
-
-
-
-
-
         // DELETE A SONG
         public async Task<IActionResult> OnPostDeleteSongAsync(int songId, int playlistId)
         {
-            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             // Repository will ensure ownership before deleting
-            await _playlistRepository.DeleteSongAsync(songId, userId);
+            await _playlistRepository.DeleteSongAsync(songId);
 
             // stay on the same playlist after deletion
             return RedirectToPage(new { id = playlistId });
@@ -176,6 +165,16 @@ namespace WebApplication2.Pages.Playlists
             return RedirectToPage(new { id = playlistId });
         }
 
+        public async Task<IActionResult> OnPostUpSongAsync(int playlistId, int songId)
+        {
+            await _playlistRepository.MoveSongUp(songId);
+            return RedirectToPage(new { id = playlistId });
+        }
+        public async Task<IActionResult> OnPostDownSongAsync(int playlistId, int songId)
+        {
+            await _playlistRepository.MoveSongDown(songId);
+            return RedirectToPage(new { id = playlistId });
+        }
 
     }
 }
