@@ -180,10 +180,12 @@ namespace WebApplication2.Models
 
             var command = connection.CreateCommand();
             command.CommandText = @"
-                SELECT s.Id, s.Title, s.Artist, s.Duration, s.DateAdded
+                SELECT s.Id, s.Title, s.Artist, s.Duration, s.DateAdded, s.NextSong
                 FROM Songs s
                 JOIN Playlists p ON s.PlaylistId = p.Id
-                WHERE s.PlaylistId = $playlistId AND p.UserId = $userId";
+                WHERE s.PlaylistId = $playlistId AND p.UserId = $userId
+                ORDER BY CASE WHEN s.NextSong IS NULL THEN 1 ELSE 0 END,
+                s.NextSong ASC";
 
             command.Parameters.AddWithValue("$playlistId", playlistId);
             command.Parameters.AddWithValue("$userId", userId.ToString());

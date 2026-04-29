@@ -1,15 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Net.Mime;
 using System.Security.Claims;
 using WebApplication2.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebApplication2.Pages.Playlists
 {
@@ -85,7 +78,6 @@ namespace WebApplication2.Pages.Playlists
             return new FileStreamResult(new MemoryStream(filedata), contentType);
         }
 
-        // PIEVIENOT DZIESMU KONKRÇTAI PLAYLISTEI
         public async Task<IActionResult> OnPostAddSongAsync()
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -126,14 +118,9 @@ namespace WebApplication2.Pages.Playlists
             return RedirectToPage(new { id = TargetPlaylistId });
         }
 
-        // DELETE A SONG
         public async Task<IActionResult> OnPostDeleteSongAsync(int songId, int playlistId)
         {
-
-            // Repository will ensure ownership before deleting
             await _playlistRepository.DeleteSongAsync(songId);
-
-            // stay on the same playlist after deletion
             return RedirectToPage(new { id = playlistId });
         }
 
@@ -151,15 +138,13 @@ namespace WebApplication2.Pages.Playlists
         int playlistId,
         string updatedTitle,
         string updatedArtist,
-        int updatedMinutes,  // <--- Must match name="updatedMinutes"
-        int updatedSeconds)  // <--- Must match name="updatedSeconds"
+        int updatedMinutes,
+        int updatedSeconds)
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            // CRITICAL: Calculate the total seconds here!
             int totalSeconds = (updatedMinutes * 60) + updatedSeconds;
 
-            // Pass the NEW totalSeconds variable to the repository
             await _playlistRepository.UpdateSongAsync(songId, updatedTitle, updatedArtist, totalSeconds, userId);
 
             return RedirectToPage(new { id = playlistId });
@@ -175,6 +160,5 @@ namespace WebApplication2.Pages.Playlists
             await _playlistRepository.MoveSongDown(songId);
             return RedirectToPage(new { id = playlistId });
         }
-
     }
 }
